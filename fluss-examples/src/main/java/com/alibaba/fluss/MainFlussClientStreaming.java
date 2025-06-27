@@ -18,9 +18,8 @@ import com.alibaba.fluss.types.DataTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -33,11 +32,11 @@ public class MainFlussClientStreaming {
         conf.setString("bootstrap.servers", "localhost:9123");
         Connection connection = ConnectionFactory.createConnection(conf);
 
-        class User{
-            private String id;
-            private int age;
-            private LocalDateTime createdAt;
-            private boolean isActive;
+        class User {
+            private final String id;
+            private final int age;
+            private final LocalDateTime createdAt;
+            private final boolean isActive;
 
             public User(String id, int age, LocalDateTime createdAt, boolean isActive) {
                 this.id = id;
@@ -83,80 +82,69 @@ public class MainFlussClientStreaming {
                 .distributedBy(1, "id")  // Distribute by the id column with 1 buckets
                 .build();
 
-        try {
-            // obtain Admin instance from the Connection
-            Admin admin = connection.getAdmin();
+//        try {
+        // obtain Admin instance from the Connection
+        Admin admin = connection.getAdmin();
 
-            // Create database (true means ignore if exists)
-            admin.createDatabase("my_db", databaseDescriptor, true).get();
+        // Create database (true means ignore if exists)
+        admin.createDatabase("my_db", databaseDescriptor, true).get();
 
-            TablePath tablePath = TablePath.of("my_db", "user_table");
+        TablePath tablePath = TablePath.of("my_db", "user_table");
 
-            admin.createTable(tablePath, tableDescriptor, true).get();
-            System.out.println("Table created successfully");
+        admin.createTable(tablePath, tableDescriptor, true).get();
+        System.out.println("Table created successfully");
 
-            // obtain Table instance from the Connection
-            Table table = connection.getTable(tablePath);
-            System.out.println(table.getTableInfo());
+        // obtain Table instance from the Connection
+        Table table = connection.getTable(tablePath);
+        System.out.println(table.getTableInfo());
 
-            table.newUpsert().createWriter();
+        table.newUpsert().createWriter();
 
-            List<User> users = List.of(
-                    new User("1", 20, LocalDateTime.now() , true),
-                    new User("2", 22, LocalDateTime.now() , true),
-                    new User("3", 23, LocalDateTime.now() , true),
-                    new User("4", 24, LocalDateTime.now() , true),
-                    new User("5", 25, LocalDateTime.now() , true)
-            );
+        List<User> users = new ArrayList<>();
+        users.add(new User("1", 20, LocalDateTime.now(), true));
+        users.add(new User("2", 22, LocalDateTime.now(), true));
+        users.add(new User("3", 23, LocalDateTime.now(), true));
+        users.add(new User("4", 24, LocalDateTime.now(), true));
+        users.add(new User("5", 25, LocalDateTime.now(), true));
 
 
-            List<GenericRow> rows = users.stream().map(user -> {
-                GenericRow row = new GenericRow(4);
-                row.setField(0, BinaryString.fromString(user.getId()));
-                row.setField(1, user.getAge());
-                row.setField(2, TimestampNtz.fromLocalDateTime(user.getCreatedAt()));
-                row.setField(3, user.isActive());
-                return row;
-            }).collect(Collectors.toList());
+        List<GenericRow> rows = users.stream().map(user -> {
+            GenericRow row = new GenericRow(4);
+            row.setField(0, BinaryString.fromString(user.getId()));
+            row.setField(1, user.getAge());
+            row.setField(2, TimestampNtz.fromLocalDateTime(user.getCreatedAt()));
+            row.setField(3, user.isActive());
+            return row;
+        }).collect(Collectors.toList());
 
-            System.out.println("Upserting rows to the table");
-            UpsertWriter writer = table.newUpsert().createWriter();
+        System.out.println("Upserting rows to the table");
+        UpsertWriter writer = table.newUpsert().createWriter();
 
-            // upsert() is a non-blocking call that sends data to Fluss server with batching and timeout
-            rows.forEach(writer::upsert);
+        // upsert() is a non-blocking call that sends data to Fluss server with batching and timeout
+        rows.forEach(writer::upsert);
 
-            // call flush() to blocking the thread until all data is written successfully
-            writer.flush();
+        // call flush() to blocking the thread until all data is written successfully
+        writer.flush();
 
-            LogScanner logScanner = table.newScan().createLogScanner();
+        LogScanner logScanner = table.newScan().createLogScanner();
 
-            int numBuckets = table.getTableInfo().getNumBuckets();
-            System.out.println("Number of buckets: " + numBuckets);
+        int numBuckets = table.getTableInfo().getNumBuckets();
+        System.out.println("Number of buckets: " + numBuckets);
 
-            for (int i = 0; i < numBuckets; i++) {
-                System.out.println("Subscribing to bucket " + i);
-                logScanner.subscribeFromBeginning(i);
-            }
+        for (int i = 0; i < numBuckets; i++) {
+            System.out.println("Subscribing to bucket " + i);
+            logScanner.subscribeFromBeginning(i);
+        }
 
-            long scanned = 0;
-            Map<Integer, List<String>> rowsMap = new HashMap<>();
-
-            while (true) {
-                System.out.println("Polling for records...");
-                ScanRecords scanRecords = logScanner.poll(Duration.ofSeconds(1));
-                for (TableBucket bucket : scanRecords.buckets()) {
-                    for (ScanRecord record : scanRecords.records(bucket)) {
-                        InternalRow row = record.getRow();
-                        System.out.println("Subscribing to bucket " + row.toString());
-                    }
+        while (true) {
+            System.out.println("Polling for records...");
+            ScanRecords scanRecords = logScanner.poll(Duration.ofSeconds(1));
+            for (TableBucket bucket : scanRecords.buckets()) {
+                for (ScanRecord record : scanRecords.records(bucket)) {
+                    InternalRow row = record.getRow();
+                    System.out.println("Subscribing to bucket " + row.toString());
                 }
-                scanned += scanRecords.count();
             }
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
         }
     }
 }
