@@ -1,4 +1,4 @@
-package com.alibaba.fluss;
+package com.alibaba.fluss.examples;
 
 import com.alibaba.fluss.client.Connection;
 import com.alibaba.fluss.client.ConnectionFactory;
@@ -70,7 +70,7 @@ public class MainFlussClientStreaming {
         // Create database descriptor
         DatabaseDescriptor databaseDescriptor =
                 DatabaseDescriptor.builder()
-                        .comment("This is a test database")
+                        .comment("This is a test database for Fluss Java Client")
                         .customProperty("owner", "data-team")
                         .build();
 

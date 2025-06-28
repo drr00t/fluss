@@ -10,19 +10,11 @@
     </parent>
 
     <artifactId>fluss-examples</artifactId>
+    <name>Fluss : Examples : </name>
+    <packaging>pom</packaging>
 
-        <dependencies>
-            <dependency>
-                <groupId>com.alibaba.fluss</groupId>
-                <artifactId>fluss-client</artifactId>
-                <version>0.8-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-
-<!--    <properties>-->
-<!--        <maven.compiler.source>11</maven.compiler.source>-->
-<!--        <maven.compiler.target>11</maven.compiler.target>-->
-<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-<!--    </properties>-->
+    <modules>
+        <module>fluss-examples-javaclient</module>
+    </modules>
 
 </project>

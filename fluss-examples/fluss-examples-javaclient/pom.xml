@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alibaba.fluss</groupId>
+        <artifactId>fluss-examples</artifactId>
+        <version>0.8-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fluss-examples-javaclient</artifactId>
+    <name>Fluss : Examples : JavaClient Usage :</name>
+    <packaging>pom</packaging>
+    <description>This an example of Fluss Java client library apis usage.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.fluss</groupId>
+            <artifactId>fluss-client</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+</project>
