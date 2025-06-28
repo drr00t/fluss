@@ -9,7 +9,11 @@ import com.alibaba.fluss.client.table.scanner.log.LogScanner;
 import com.alibaba.fluss.client.table.scanner.log.ScanRecords;
 import com.alibaba.fluss.client.table.writer.UpsertWriter;
 import com.alibaba.fluss.config.Configuration;
-import com.alibaba.fluss.metadata.*;
+import com.alibaba.fluss.metadata.DatabaseDescriptor;
+import com.alibaba.fluss.metadata.Schema;
+import com.alibaba.fluss.metadata.TableBucket;
+import com.alibaba.fluss.metadata.TableDescriptor;
+import com.alibaba.fluss.metadata.TablePath;
 import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.InternalRow;
@@ -25,6 +29,9 @@ import java.util.stream.Collectors;
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+/**
+ * Example Java Client usage for Fluss demonstrating streaming operations.
+ */
 public class MainFlussClientStreaming {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         // creating Connection object to connect with Fluss cluster
@@ -106,7 +113,6 @@ public class MainFlussClientStreaming {
         users.add(new User("3", 23, LocalDateTime.now(), true));
         users.add(new User("4", 24, LocalDateTime.now(), true));
         users.add(new User("5", 25, LocalDateTime.now(), true));
-
 
         List<GenericRow> rows = users.stream().map(user -> {
             GenericRow row = new GenericRow(4);
