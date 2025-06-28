@@ -23,17 +23,29 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.alibaba.fluss</groupId>
-        <artifactId>fluss</artifactId>
+        <artifactId>fluss-examples</artifactId>
         <version>0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fluss-examples</artifactId>
-    <name>Fluss : Examples :</name>
+    <artifactId>fluss-examples-flinkengine</artifactId>
+    <name>Fluss : Examples : FlinkEngine Usage :</name>
     <packaging>pom</packaging>
+    <description>This an example of Fluss Flink Engine framework usage.</description>
 
-    <modules>
-        <module>fluss-examples-javaclient</module>
-        <module>fluss-examples-flinkengine</module>
-    </modules>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.fluss/fluss-flink-1.20 -->
+        <dependency>
+            <groupId>com.alibaba.fluss</groupId>
+            <artifactId>fluss-flink-1.20</artifactId>
+            <version>0.8-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-java</artifactId>
+            <version>1.20.1</version>
+        </dependency>
+
+    </dependencies>
 
 </project>
