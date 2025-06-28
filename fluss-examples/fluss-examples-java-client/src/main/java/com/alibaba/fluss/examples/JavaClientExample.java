@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
-public class MainFlussClientStreaming {
+public class JavaClientExample {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         // creating Connection object to connect with Fluss cluster
         Configuration conf = new Configuration();

@@ -29,11 +29,15 @@
 
     <artifactId>fluss-examples</artifactId>
     <name>Fluss : Examples :</name>
+    <version>0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>fluss-examples-javaclient</module>
-        <module>fluss-examples-flinkengine</module>
+        <module>fluss-examples-java-client</module>
+        <module>fluss-examples-flink</module>
     </modules>
+    <properties>
+        <project.version>0.8-SNAPSHOT</project.version>
+    </properties>
 
 </project>
