@@ -38,6 +38,8 @@
     </modules>
     <properties>
         <project.version>0.8-SNAPSHOT</project.version>
+        <java.version>1.8</java.version>
+
     </properties>
 
 </project>
