@@ -57,7 +57,7 @@ services:
   # Fluss services
 
   coordinator:
-    image: fluss/fluss:latest
+    image: fluss/fluss:0.7.0
     hostname: coordinator-server
     container_name: coordinator-server
     command: [ "coordinatorServer" ]
@@ -77,7 +77,7 @@ services:
       - fluss-net
 
   tablet-server-0:
-    image: fluss/fluss:latest
+    image: fluss/fluss:0.7.0
     hostname: tablet-server-0
     container_name: tablet-server-0
     command: [ "tabletServer" ]
