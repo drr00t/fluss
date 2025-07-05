@@ -30,12 +30,16 @@ import com.alibaba.fluss.metadata.DatabaseDescriptor;
 import com.alibaba.fluss.metadata.Schema;
 import com.alibaba.fluss.metadata.TableBucket;
 import com.alibaba.fluss.metadata.TableDescriptor;
+import com.alibaba.fluss.metadata.TableInfo;
 import com.alibaba.fluss.metadata.TablePath;
 import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.InternalRow;
 import com.alibaba.fluss.row.TimestampNtz;
 import com.alibaba.fluss.types.DataTypes;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -48,16 +52,17 @@ import java.util.stream.Collectors;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
 public class JavaClientExample {
+    private static final Logger logger = LoggerFactory.getLogger(JavaClientExample.class);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        String hostname = ""; // ""localhost:9123";
+        String hostname = "localhost:9123";
+        logger.info("Starting {}", JavaClientExample.class.getSimpleName());
 
         if (args.length > 0) {
-            System.out.println(
-                    String.format("Default server host changed via CLI to: %s", args[0]));
+            logger.info(String.format("Default server host changed via CLI to: %s", args[0]));
             hostname = args[0];
         } else if (System.getenv("FLUSS_HOST") != null) {
-            System.out.println(
+            logger.info(
                     String.format(
                             "Default server host changed via ENV to: %s",
                             System.getenv("FLUSS_HOST")));
@@ -132,11 +137,15 @@ public class JavaClientExample {
         TablePath tablePath = TablePath.of("my_db", "user_table");
 
         admin.createTable(tablePath, tableDescriptor, true).get();
-        System.out.println("Table created successfully");
+        logger.info("Table created successfully");
 
         // obtain Table instance from the Connection
         Table table = connection.getTable(tablePath);
-        System.out.println(table.getTableInfo());
+        TableInfo tblInfo = table.getTableInfo();
+        logger.info(
+                String.format(
+                        "BucketKeys Count: %s Table Name: %s",
+                        tblInfo.getBucketKeys().size(), tblInfo.getTablePath().getTableName()));
 
         table.newUpsert().createWriter();
 
@@ -161,7 +170,7 @@ public class JavaClientExample {
                                 })
                         .collect(Collectors.toList());
 
-        System.out.println("Upserting rows to the table");
+        logger.info("Upserting rows to the table");
         UpsertWriter writer = table.newUpsert().createWriter();
 
         // upsert() is a non-blocking call that sends data to Fluss server with batching and timeout
@@ -173,20 +182,20 @@ public class JavaClientExample {
         LogScanner logScanner = table.newScan().createLogScanner();
 
         int numBuckets = table.getTableInfo().getNumBuckets();
-        System.out.println("Number of buckets: " + numBuckets);
+        logger.info(String.format("Number of buckets: %s", numBuckets));
 
         for (int i = 0; i < numBuckets; i++) {
-            System.out.println("Subscribing to bucket " + i);
+            logger.info(String.format("Subscribing to bucket %s", i));
             logScanner.subscribeFromBeginning(i);
         }
 
         while (true) {
-            System.out.println("Polling for records...");
+            logger.info("Polling for records...");
             ScanRecords scanRecords = logScanner.poll(Duration.ofSeconds(1));
             for (TableBucket bucket : scanRecords.buckets()) {
                 for (ScanRecord record : scanRecords.records(bucket)) {
                     InternalRow row = record.getRow();
-                    System.out.println("Subscribing to bucket " + row.toString());
+                    logger.info(String.format("Subscribing to bucket %s", row.toString()));
                 }
             }
         }

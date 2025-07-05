@@ -36,7 +36,20 @@
             <artifactId>fluss-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
     </dependencies>
+    <properties>
+        <slf4j.version>1.7.36</slf4j.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
