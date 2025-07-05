@@ -59,13 +59,10 @@ public class JavaClientExample {
         logger.info("Starting {}", JavaClientExample.class.getSimpleName());
 
         if (args.length > 0) {
-            logger.info(String.format("Default server host changed via CLI to: %s", args[0]));
+            logger.info("Default server host changed via CLI to: {}", args[0]);
             hostname = args[0];
         } else if (System.getenv("FLUSS_HOST") != null) {
-            logger.info(
-                    String.format(
-                            "Default server host changed via ENV to: %s",
-                            System.getenv("FLUSS_HOST")));
+            logger.info("Default server host changed via ENV to: {}", System.getenv("FLUSS_HOST"));
             hostname = System.getenv("FLUSS_HOST");
         }
 
@@ -143,9 +140,9 @@ public class JavaClientExample {
         Table table = connection.getTable(tablePath);
         TableInfo tblInfo = table.getTableInfo();
         logger.info(
-                String.format(
-                        "BucketKeys Count: %s Table Name: %s",
-                        tblInfo.getBucketKeys().size(), tblInfo.getTablePath().getTableName()));
+                "BucketKeys Count: {} Table Name: {}",
+                tblInfo.getBucketKeys().size(),
+                tblInfo.getTablePath().getTableName());
 
         table.newUpsert().createWriter();
 
@@ -182,10 +179,10 @@ public class JavaClientExample {
         LogScanner logScanner = table.newScan().createLogScanner();
 
         int numBuckets = table.getTableInfo().getNumBuckets();
-        logger.info(String.format("Number of buckets: %s", numBuckets));
+        logger.info("Number of buckets: {}", numBuckets);
 
         for (int i = 0; i < numBuckets; i++) {
-            logger.info(String.format("Subscribing to bucket %s", i));
+            logger.info("Subscribing to bucket {}", i);
             logScanner.subscribeFromBeginning(i);
         }
 
@@ -195,7 +192,7 @@ public class JavaClientExample {
             for (TableBucket bucket : scanRecords.buckets()) {
                 for (ScanRecord record : scanRecords.records(bucket)) {
                     InternalRow row = record.getRow();
-                    logger.info(String.format("Subscribing to bucket %s", row.toString()));
+                    logger.info("Subscribing to bucket {}", row);
                 }
             }
         }
