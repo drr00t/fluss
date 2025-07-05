@@ -34,6 +34,7 @@
     <modules>
         <module>fluss-examples-java-client</module>
         <module>fluss-examples-flink</module>
+        <module>fluss-examples-data-gen-ecommerce</module>
     </modules>
     <properties>
         <java.version>11</java.version>
