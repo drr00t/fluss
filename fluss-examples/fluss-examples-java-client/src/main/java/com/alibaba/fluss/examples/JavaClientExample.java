@@ -49,9 +49,23 @@ import java.util.stream.Collectors;
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
 public class JavaClientExample {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        String hostname = "localhost:9123";
+
+        if (args.length > 1) {
+            System.out.println(
+                    String.format("Default server host changed via CLI to: %s", args[0]));
+            hostname = args[0];
+        } else if (System.getenv("FLUSS_HOST") != null) {
+            System.out.println(
+                    String.format(
+                            "Default server host changed via ENV to: %s",
+                            System.getenv("FLUSS_HOST")));
+            hostname = System.getenv("FLUSS_HOST");
+        }
+
         // creating Connection object to connect with Fluss cluster
         Configuration conf = new Configuration();
-        conf.setString("bootstrap.servers", "localhost:9123");
+        conf.setString("bootstrap.servers", hostname);
         Connection connection = ConnectionFactory.createConnection(conf);
 
         class User {
