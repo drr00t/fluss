@@ -18,4 +18,9 @@
 
 package com.alibaba.fluss.examples.ecommerce.boundary.persistence;
 
+/**
+ * This class serves as a repository for managing e-commerce entities. It provides methods to
+ * interact with the underlying data store, allowing for operations such as saving, updating,
+ * deleting, and retrieving entities.
+ */
 public class Repository {}
