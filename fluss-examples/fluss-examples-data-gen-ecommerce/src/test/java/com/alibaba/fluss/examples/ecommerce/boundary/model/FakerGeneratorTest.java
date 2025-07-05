@@ -18,9 +18,13 @@
 
 package com.alibaba.fluss.examples.ecommerce.boundary.model;
 
+import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.CustomerFakerGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.ProductFakerGenerator;
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.examples.ecommerce.entity.Product;
 
 import net.datafaker.Faker;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +32,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-class FakerRepositoryTest {
+/** */
+class FakerGeneratorTest {
 
     @Test
     void createCustomer() {
@@ -58,16 +63,12 @@ class FakerRepositoryTest {
         Assertions.assertNotNull(customer.address());
         Assertions.assertNotNull(customer.birthdate());
         Assertions.assertNotNull(customer.city());
-
-        System.out.println(customer.toString());
-        System.out.println(customer1.toString());
-        System.out.println(customer2.toString());
     }
 
     @Test
     @DisplayName("Generate Fake Customer")
     void generateFakeCustomer() {
-        FakerRepository respotiry = new FakerRepository();
+        CustomerFakerGenerator respotiry = new CustomerFakerGenerator();
 
         Customer customer = respotiry.generateOne();
 
@@ -77,13 +78,11 @@ class FakerRepositoryTest {
         Assertions.assertNotNull(customer.address());
         Assertions.assertNotNull(customer.birthdate());
         Assertions.assertNotNull(customer.city());
-
-        System.out.print(customer.toString());
     }
 
     @Test
     void generateManyCustomers() {
-        FakerRepository respotiry = new FakerRepository();
+        CustomerFakerGenerator respotiry = new CustomerFakerGenerator();
 
         int count = 1000;
         List<Customer> customers = respotiry.generateMany(count);
@@ -96,6 +95,36 @@ class FakerRepositoryTest {
             Assertions.assertNotNull(customer.address());
             Assertions.assertNotNull(customer.birthdate());
             Assertions.assertNotNull(customer.city());
+        }
+    }
+
+    @Test
+    void generateOneProduct() {
+        ProductFakerGenerator repository = new ProductFakerGenerator();
+
+        Product product = repository.generateOne();
+
+        // Add assertions to verify the properties of the generated product
+        Assertions.assertNotNull(product.name());
+        Assertions.assertNotNull(product.description());
+        Assertions.assertNotNull(product.price());
+        Assertions.assertNotNull(product.category());
+    }
+
+    @Test
+    void generateManyProducts() {
+        ProductFakerGenerator repository = new ProductFakerGenerator();
+
+        int count = 1000;
+        List<Product> products = repository.generateMany(count);
+
+        // Add assertions to verify the properties of the generated products
+        Assertions.assertEquals(count, products.size());
+        for (Product product : products) {
+            Assertions.assertNotNull(product.name());
+            Assertions.assertNotNull(product.description());
+            Assertions.assertNotNull(product.price());
+            Assertions.assertNotNull(product.category());
         }
     }
 }

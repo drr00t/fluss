@@ -18,6 +18,7 @@
 
 package com.alibaba.fluss.examples.ecommerce.entity;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /** Represents a product with an id, name, description, price, and category. */
@@ -63,7 +64,7 @@ public class Product {
     }
 
     public static Product create(String name, String description, Double price, String category) {
-        long pid = System.currentTimeMillis();
+        long pid = Instant.now().toEpochMilli() ^ System.nanoTime();
         return new Product(pid, name, description, price, category);
     }
 

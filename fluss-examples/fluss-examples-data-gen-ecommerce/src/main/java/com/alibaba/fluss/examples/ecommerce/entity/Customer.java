@@ -93,7 +93,7 @@ public class Customer {
     }
 
     public static Customer create(String name, String address, LocalDate birthdate, String city) {
-        long cid = Instant.now(). + new Random().; // Simulate a unique ID
+        long cid = Instant.now().toEpochMilli() ^ System.nanoTime();
         LocalDateTime createdAt = LocalDateTime.now();
         return Customer.of(cid, name, address, birthdate, city, createdAt, createdAt);
     }

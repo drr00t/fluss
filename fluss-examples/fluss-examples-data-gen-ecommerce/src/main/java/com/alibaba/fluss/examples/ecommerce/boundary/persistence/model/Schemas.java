@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary.model;
+package com.alibaba.fluss.examples.ecommerce.boundary.persistence.model;
 
 import com.alibaba.fluss.metadata.Schema;
 import com.alibaba.fluss.types.DataTypes;

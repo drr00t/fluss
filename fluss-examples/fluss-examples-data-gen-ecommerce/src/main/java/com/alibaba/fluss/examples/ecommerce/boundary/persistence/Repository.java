@@ -16,18 +16,6 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary.model;
+package com.alibaba.fluss.examples.ecommerce.boundary.persistence;
 
-import java.util.List;
-
-/**
- * Repository interface for generating entities of type TEntity. This interface defines methods to
- * generate a single entity or a set of entities.
- *
- * @param <TEntity> the type of entity to be generated
- */
-public interface Repository<TEntity> {
-    TEntity generateOne();
-
-    List<TEntity> generateMany(int count);
-}
+public class Repository {}

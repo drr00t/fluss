@@ -16,41 +16,40 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary.model;
+package com.alibaba.fluss.examples.ecommerce.boundary.datagenerator;
 
-import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.examples.ecommerce.entity.Product;
 
 import net.datafaker.Faker;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
  * Repository interface for managing Customer entities. This interface extends the generic
  * Repository interface.
  */
-public class FakerRepository implements Repository<Customer> {
+public class ProductFakerGenerator implements Generator<Product> {
     @Override
-    public Customer generateOne() {
+    public Product generateOne() {
         return generateMany(1).stream().findFirst().orElse(null);
     }
 
     @Override
-    public List<Customer> generateMany(int count) {
+    public List<Product> generateMany(int count) {
         return faker.collection(
                         () -> {
-                            String name = faker.name().firstName() + " " + faker.name().lastName();
-                            Timestamp date = faker.date().birthday();
-                            LocalDate birthDate =
-                                    LocalDate.of(
-                                            date.toLocalDateTime().getYear(),
-                                            date.toLocalDateTime().getMonth(),
-                                            date.toLocalDateTime().getDayOfMonth());
-                            String address = faker.address().fullAddress();
-                            String city = faker.address().city();
+                            String name = faker.commerce().productName();
+                            Double price = Double.valueOf(faker.commerce().price(1.50, 30000.60));
+                            String description =
+                                    String.format(
+                                            "Brand: %s Department: %s Material: %s, Vendor: %s",
+                                            faker.commerce().brand(),
+                                            faker.commerce().department(),
+                                            faker.commerce().material(),
+                                            faker.commerce().vendor());
+                            String category = faker.commerce().department();
 
-                            return Customer.create(name, address, birthDate, city);
+                            return Product.create(name, description, price, category);
                         })
                 .maxLen(count)
                 .generate();
