@@ -24,7 +24,6 @@ import com.alibaba.fluss.examples.ecommerce.entity.Customer;
 import com.alibaba.fluss.examples.ecommerce.entity.Product;
 
 import net.datafaker.Faker;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

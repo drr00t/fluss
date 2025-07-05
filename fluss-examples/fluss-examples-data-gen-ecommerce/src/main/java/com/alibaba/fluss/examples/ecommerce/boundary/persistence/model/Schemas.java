@@ -30,16 +30,18 @@ public class Schemas {
     private static final DecimalType MONEY_TYPE = DataTypes.DECIMAL(9, 6);
     public static final Schema CUSTOMER_SCHEMA =
             Schema.newBuilder()
-                    .column("id", DataTypes.INT())
+                    .column("id", DataTypes.BIGINT())
                     .column("name", DataTypes.STRING())
                     .column("bithdata", DataTypes.DATE())
                     .column("address", DataTypes.STRING())
                     .column("city", DataTypes.STRING())
+                    .column("createdAt", DataTypes.TIMESTAMP())
+                    .column("updatedAt", DataTypes.TIMESTAMP())
                     .build();
 
     public static final Schema PRODUCT_SCHEMA =
             Schema.newBuilder()
-                    .column("id", DataTypes.INT())
+                    .column("id", DataTypes.BIGINT())
                     .column("name", DataTypes.STRING())
                     .column("description", DataTypes.STRING())
                     .column("price", MONEY_TYPE)
@@ -48,7 +50,7 @@ public class Schemas {
 
     public static final Schema ORDER_SCHEMA =
             Schema.newBuilder()
-                    .column("id", DataTypes.INT())
+                    .column("id", DataTypes.BIGINT())
                     .column("customerId", DataTypes.INT())
                     .column("orderDate", DataTypes.TIMESTAMP())
                     .column("total", MONEY_TYPE)
@@ -57,9 +59,9 @@ public class Schemas {
     public static final Schema SALE_SCHEMA =
             Schema.newBuilder()
                     .column("id", DataTypes.STRING())
-                    .column("orderId", DataTypes.INT())
-                    .column("productId", DataTypes.INT())
-                    .column("quantity", DataTypes.INT())
+                    .column("orderId", DataTypes.BIGINT())
+                    .column("productId", DataTypes.BIGINT())
+                    .column("quantity", DataTypes.BIGINT())
                     .column("price", MONEY_TYPE)
                     .build();
 }
