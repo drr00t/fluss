@@ -48,10 +48,11 @@ import java.util.stream.Collectors;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
 public class JavaClientExample {
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        String hostname = "localhost:9123";
 
-        if (args.length > 1) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        String hostname = ""; // ""localhost:9123";
+
+        if (args.length > 0) {
             System.out.println(
                     String.format("Default server host changed via CLI to: %s", args[0]));
             hostname = args[0];
