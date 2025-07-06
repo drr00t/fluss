@@ -73,7 +73,8 @@ services:
     networks:
       - fluss-net
     volumes:
-      - shared-tmpfs:/tmp/fluss
+      - ./fluss-data/0:/tmp/fluss
+      - ./fluss-data-remote/0:/tmp/fluss/remote-data
 
   tablet-server-1:
     image: fluss/fluss:0.7.0
@@ -97,7 +98,8 @@ services:
     networks:
       - fluss-net
     volumes:
-      - shared-tmpfs:/tmp/fluss
+      - ./fluss-data/1:/tmp/fluss
+      - ./fluss-data-remote/1:/tmp/fluss/remote-data
 
   tablet-server-2:
     image: fluss/fluss:0.7.0
@@ -121,39 +123,40 @@ services:
     networks:
       - fluss-net
     volumes:
-      - shared-tmpfs:/tmp/fluss
+      - ./fluss-data/2:/tmp/fluss
+      - ./fluss-data-remote/2:/tmp/fluss/remote-data
 
-  jobmanager:
-    build: .
-    hostname: jobmanager
-    container_name: jobmanager
-    command: [ "jobmanager" ]
-    ports:
-      - "8081:8081"
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-    networks:
-      - fluss-net
-    volumes:
-      - shared-tmpfs:/tmp/paimon
-
-  taskmanager:
-    build: .
-    hostname: taskmanager
-    container_name: taskmanager
-    command: [ "taskmanager" ]
-    ports:
-      - "6121:6121"
-      - "6122:6122"
-      - "8082:8082"
-    depends_on:
-      - jobmanager
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-    networks:
-      - fluss-net
-    volumes:
-      - shared-tmpfs:/tmp/paimon
+#  jobmanager:
+#    build: .
+#    hostname: jobmanager
+#    container_name: jobmanager
+#    command: [ "jobmanager" ]
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+#    networks:
+#      - fluss-net
+#    volumes:
+#      - shared-tmpfs:/tmp/paimon
+#
+#  taskmanager:
+#    build: .
+#    hostname: taskmanager
+#    container_name: taskmanager
+#    command: [ "taskmanager" ]
+#    ports:
+#      - "6121:6121"
+#      - "6122:6122"
+#      - "8082:8082"
+#    depends_on:
+#      - jobmanager
+#    environment:
+#      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+#    networks:
+#      - fluss-net
+#    volumes:
+#      - shared-tmpfs:/tmp/paimon
 
 volumes:
   shared-tmpfs:

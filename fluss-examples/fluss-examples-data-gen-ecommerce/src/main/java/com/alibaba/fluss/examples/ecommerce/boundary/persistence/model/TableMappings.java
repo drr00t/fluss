@@ -19,6 +19,7 @@
 package com.alibaba.fluss.examples.ecommerce.boundary.persistence.model;
 
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.TimestampNtz;
 
@@ -30,10 +31,10 @@ public class TableMappings {
     public static GenericRow ofCustomer(Customer customer) {
         GenericRow row = new GenericRow(Customer.class.getDeclaredFields().length);
         row.setField(0, customer.id());
-        row.setField(1, customer.name());
-        row.setField(2, customer.birthdate());
-        row.setField(3, customer.address());
-        row.setField(4, customer.city());
+        row.setField(1, BinaryString.fromString(customer.name()));
+        row.setField(2, (int) customer.birthdate().toEpochDay());
+        row.setField(3, BinaryString.fromString(customer.address()));
+        row.setField(4, BinaryString.fromString(customer.city()));
         row.setField(5, TimestampNtz.fromLocalDateTime(customer.createdAt()));
         row.setField(6, TimestampNtz.fromLocalDateTime(customer.updatedAt()));
         return row;

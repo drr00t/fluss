@@ -28,7 +28,7 @@ import java.util.Objects;
  * instances and overrides equals and hashCode.
  */
 public class Customer {
-    private final long id;
+    private final int id;
     private final String name;
     private final String address;
     private final LocalDate birthdate;
@@ -36,7 +36,7 @@ public class Customer {
     private final LocalDateTime createdAt;
     private final String city;
 
-    public long id() {
+    public int id() {
         return id;
     }
 
@@ -65,7 +65,7 @@ public class Customer {
     }
 
     public Customer(
-            long id,
+            int id,
             String name,
             String address,
             LocalDate birthdate,
@@ -82,7 +82,7 @@ public class Customer {
     }
 
     public static Customer of(
-            long id,
+            int id,
             String name,
             String address,
             LocalDate birthdate,
@@ -93,7 +93,7 @@ public class Customer {
     }
 
     public static Customer create(String name, String address, LocalDate birthdate, String city) {
-        long cid = Instant.now().toEpochMilli() ^ System.nanoTime();
+        int cid = (int) (Instant.now().toEpochMilli() ^ System.nanoTime());
         LocalDateTime createdAt = LocalDateTime.now();
         return Customer.of(cid, name, address, birthdate, city, createdAt, createdAt);
     }

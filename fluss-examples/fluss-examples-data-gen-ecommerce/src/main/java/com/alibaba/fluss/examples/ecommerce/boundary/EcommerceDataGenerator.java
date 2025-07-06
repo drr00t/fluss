@@ -53,5 +53,9 @@ public class EcommerceDataGenerator {
         logger.info("Let's Generate {} Customers.", customersToGenerate);
         management.writingCustomerData(Tables.CUSTOMER_TABLE_PATH, 10000);
         logger.info("{} Customers written to database.", customersToGenerate);
+
+        logger.info("Start to reading customer data from database.");
+
+        management.readingCustomerData(Tables.CUSTOMER_TABLE_PATH);
     }
 }

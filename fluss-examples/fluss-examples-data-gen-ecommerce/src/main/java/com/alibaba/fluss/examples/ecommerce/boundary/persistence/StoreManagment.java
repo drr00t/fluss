@@ -21,18 +21,25 @@ package com.alibaba.fluss.examples.ecommerce.boundary.persistence;
 import com.alibaba.fluss.client.Connection;
 import com.alibaba.fluss.client.admin.Admin;
 import com.alibaba.fluss.client.table.Table;
+import com.alibaba.fluss.client.table.scanner.ScanRecord;
+import com.alibaba.fluss.client.table.scanner.log.LogScanner;
+import com.alibaba.fluss.client.table.scanner.log.ScanRecords;
 import com.alibaba.fluss.client.table.writer.AppendWriter;
 import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.CustomerFakerGenerator;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.TableMappings;
 import com.alibaba.fluss.metadata.DatabaseDescriptor;
 import com.alibaba.fluss.metadata.DatabaseInfo;
+import com.alibaba.fluss.metadata.TableBucket;
 import com.alibaba.fluss.metadata.TableDescriptor;
 import com.alibaba.fluss.metadata.TablePath;
 import com.alibaba.fluss.row.GenericRow;
+import com.alibaba.fluss.row.InternalRow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -76,11 +83,14 @@ public class StoreManagment {
 
         if (admin.tableExists(tablePath).get()) {
             logger.info("Table {} already exists, skipping creation.", tablePath);
-            //            admin.dropTable(Tables.CUSTOMER_TABLE_PATH, true).get();
+            admin.dropTable(tablePath, true).get();
+            Thread.sleep(1000); // Wait for the table to be dropped
             return;
         }
 
         admin.createTable(tablePath, descriptor, true).get();
+        logger.info("Wainting table {} creation...", tablePath);
+        Thread.sleep(10000); // Wait for the table to be dropped
         logger.info("Table {} created successfully.", tablePath);
 
         if (!admin.tableExists(tablePath).get()) {
@@ -90,6 +100,7 @@ public class StoreManagment {
 
         Table table = storageConnection.getTable(tablePath);
         logger.info("Table {} is ready for use.", tablePath);
+        Thread.sleep(1000); // Wait for the table to be dropped
     }
 
     public void writingCustomerData(TablePath pathPath, int customerCount) {
@@ -109,27 +120,38 @@ public class StoreManagment {
 
         logger.info("Customer data Written Successfully.");
 
-        //        logger.info("Creating table writer for table {} ...",
-        // AppUtils.SENSOR_INFORMATION_TBL);
-        //        Table sensorInfoTable = connection.getTable(AppUtils.getSensorInfoTablePath());
-        //        UpsertWriter upsertWriter = sensorInfoTable.newUpsert().createWriter();
-        //
-        //        AppUtils.sensorInfos.forEach(
-        //                sensorInfo -> {
-        //                    GenericRow row = sensorInfoToRow(sensorInfo);
-        //                    upsertWriter.upsert(row);
-        //                });
-        //        upsertWriter.flush();
-
         logger.info("Sensor Information Successfully.");
-
-        logger.info("Closing writers and connections.");
 
         try {
             admin.close();
             storageConnection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void readingCustomerData(TablePath pathPath) {
+        Table table = storageConnection.getTable(pathPath);
+
+        LogScanner logScanner =
+                table.newScan().project(List.of("id", "name", "bithdata")).createLogScanner();
+
+        int numBuckets = table.getTableInfo().getNumBuckets();
+        for (int i = 0; i < numBuckets; i++) {
+            logger.info("Subscribing to Bucket {}.", i);
+            logScanner.subscribeFromBeginning(i);
+        }
+
+        while (true) {
+            logger.info("Polling for records...");
+            ScanRecords scanRecords = logScanner.poll(Duration.ofSeconds(1));
+            for (TableBucket bucket : scanRecords.buckets()) {
+                for (ScanRecord record : scanRecords.records(bucket)) {
+                    InternalRow row = record.getRow();
+                    logger.info("Received customer data '{}' ", row);
+                    logger.info("---------------------------------------");
+                }
+            }
         }
     }
 }
