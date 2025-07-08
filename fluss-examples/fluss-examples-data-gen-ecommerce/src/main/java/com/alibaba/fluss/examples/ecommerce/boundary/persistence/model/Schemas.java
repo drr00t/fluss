@@ -30,9 +30,9 @@ public class Schemas {
     private static final DecimalType MONEY_TYPE = DataTypes.DECIMAL(9, 6);
     public static final Schema CUSTOMER_SCHEMA =
             Schema.newBuilder()
-                    .column("id", DataTypes.INT())
+                    .column("id", DataTypes.BIGINT())
                     .column("name", DataTypes.STRING())
-                    .column("bithdata", DataTypes.DATE())
+                    .column("birthdate", DataTypes.DATE())
                     .column("address", DataTypes.STRING())
                     .column("city", DataTypes.STRING())
                     .column("createdAt", DataTypes.TIMESTAMP())

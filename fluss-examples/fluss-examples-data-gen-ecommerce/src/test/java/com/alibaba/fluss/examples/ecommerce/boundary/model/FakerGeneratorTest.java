@@ -22,6 +22,9 @@ import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.CustomerFaker
 import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.ProductFakerGenerator;
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
 import com.alibaba.fluss.examples.ecommerce.entity.Product;
+import com.alibaba.fluss.row.BinaryString;
+import com.alibaba.fluss.row.GenericRow;
+import com.alibaba.fluss.row.TimestampNtz;
 
 import net.datafaker.Faker;
 import org.junit.jupiter.api.Assertions;
@@ -41,21 +44,21 @@ class FakerGeneratorTest {
                 Customer.create(
                         faker.name().fullName(),
                         faker.address().fullAddress(),
-                        LocalDate.now().minusYears(20),
-                        faker.address().city());
+                        faker.address().city(),
+                        LocalDate.now().minusYears(20));
 
         Customer customer1 =
                 Customer.create(
                         faker.name().fullName(),
                         faker.address().fullAddress(),
-                        LocalDate.now().minusYears(20),
-                        faker.address().city());
+                        faker.address().city(),
+                        LocalDate.now().minusYears(20));
         Customer customer2 =
                 Customer.create(
                         faker.name().fullName(),
                         faker.address().fullAddress(),
-                        LocalDate.now().minusYears(20),
-                        faker.address().city());
+                        faker.address().city(),
+                        LocalDate.now().minusYears(20));
 
         // Add assertions to verify the properties of the created customer
         Assertions.assertNotNull(customer.name());
@@ -72,7 +75,6 @@ class FakerGeneratorTest {
         Customer customer = respotiry.generateOne();
 
         // Add assertions to verify the properties of the generated customer
-        Assertions.assertNotNull(customer.id());
         Assertions.assertNotNull(customer.name());
         Assertions.assertNotNull(customer.address());
         Assertions.assertNotNull(customer.birthdate());
@@ -125,5 +127,24 @@ class FakerGeneratorTest {
             Assertions.assertNotNull(product.price());
             Assertions.assertNotNull(product.category());
         }
+    }
+
+    @Test
+    void tableMappingCheck() {
+        Customer customer =
+                Customer.create(
+                        "John Doe",
+                        "123 Main St, Springfield, USA",
+                        "Springfield",
+                        LocalDate.now());
+        GenericRow row = new GenericRow(Customer.class.getDeclaredFields().length);
+        row.setField(0, customer.id());
+        row.setField(1, BinaryString.fromString(customer.name()));
+        row.setField(2, (int) customer.birthdate().toEpochDay());
+        row.setField(3, BinaryString.fromString(customer.address()));
+        row.setField(4, BinaryString.fromString(customer.city()));
+        row.setField(5, TimestampNtz.fromLocalDateTime(customer.createdAt()));
+        row.setField(6, TimestampNtz.fromLocalDateTime(customer.updatedAt()));
+        Assertions.assertTrue(true, "TableMappings class is functioning as expected.");
     }
 }

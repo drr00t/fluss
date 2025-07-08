@@ -41,11 +41,15 @@ public class CustomerFakerGenerator implements Generator<Customer> {
                         () -> {
                             String name = faker.name().fullName();
                             LocalDate birthDate =
-                                    faker.date().birthday().toLocalDateTime().toLocalDate();
+                                    faker.date()
+                                            .birthday()
+                                            .toLocalDateTime()
+                                            .toLocalDate()
+                                            .minusYears(faker.number().numberBetween(18, 40));
                             String address = faker.address().fullAddress();
                             String city = faker.address().city();
 
-                            return Customer.create(name, address, birthDate, city);
+                            return Customer.create(name, address, city, birthDate);
                         })
                 .maxLen(count)
                 .generate();

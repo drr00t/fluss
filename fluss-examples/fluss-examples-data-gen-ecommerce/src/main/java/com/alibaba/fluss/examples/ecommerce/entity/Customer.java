@@ -28,7 +28,7 @@ import java.util.Objects;
  * instances and overrides equals and hashCode.
  */
 public class Customer {
-    private final int id;
+    private final long id;
     private final String name;
     private final String address;
     private final LocalDate birthdate;
@@ -36,7 +36,7 @@ public class Customer {
     private final LocalDateTime createdAt;
     private final String city;
 
-    public int id() {
+    public long id() {
         return id;
     }
 
@@ -65,11 +65,11 @@ public class Customer {
     }
 
     public Customer(
-            int id,
+            long id,
             String name,
             String address,
-            LocalDate birthdate,
             String city,
+            LocalDate birthdate,
             LocalDateTime updatedAt,
             LocalDateTime createdAt) {
         this.id = id;
@@ -82,20 +82,20 @@ public class Customer {
     }
 
     public static Customer of(
-            int id,
+            long id,
             String name,
             String address,
-            LocalDate birthdate,
             String city,
+            LocalDate birthdate,
             LocalDateTime updatedAt,
             LocalDateTime createdAt) {
-        return new Customer(id, name, address, birthdate, city, updatedAt, createdAt);
+        return new Customer(id, name, address, city, birthdate, updatedAt, createdAt);
     }
 
-    public static Customer create(String name, String address, LocalDate birthdate, String city) {
-        int cid = (int) (Instant.now().toEpochMilli() ^ System.nanoTime());
+    public static Customer create(String name, String address, String city, LocalDate birthdate) {
+        long cid = (Instant.now().toEpochMilli() ^ System.nanoTime());
         LocalDateTime createdAt = LocalDateTime.now();
-        return Customer.of(cid, name, address, birthdate, city, createdAt, createdAt);
+        return Customer.of(cid, name, address, city, birthdate, createdAt, createdAt);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class Customer {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, birthdate, city);
+        return Objects.hash(id, name, address, city);
     }
 
     @Override

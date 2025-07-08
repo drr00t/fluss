@@ -82,7 +82,7 @@ public class StoreManagment {
         logger.info("Setting up table: {} with descriptor: {}", tablePath, descriptor);
 
         if (admin.tableExists(tablePath).get()) {
-            logger.info("Table {} already exists, skipping creation.", tablePath);
+            logger.info("Table {} already exists, and will be dropped.", tablePath);
             admin.dropTable(tablePath, true).get();
             Thread.sleep(1000); // Wait for the table to be dropped
             return;
@@ -122,9 +122,35 @@ public class StoreManagment {
 
         logger.info("Sensor Information Successfully.");
 
+        //        try {
+        //            admin.close();
+        //            storageConnection.close();
+        //        } catch (Exception e) {
+        //            throw new RuntimeException(e);
+        //        }
+    }
+
+    public void writingBasicCustomerData(TablePath pathPath, int customerCount) {
+
+        Table table = storageConnection.getTable(pathPath);
+        AppendWriter writer = table.newAppend().createWriter();
+
+        CustomerFakerGenerator dataGenerator = new CustomerFakerGenerator();
+        dataGenerator
+                .generateMany(customerCount)
+                .forEach(
+                        reading -> {
+                            GenericRow row = TableMappings.ofCustomer(reading);
+                            writer.append(row);
+                        });
+
         try {
-            admin.close();
-            storageConnection.close();
+            writer.flush();
+            //            admin.close();
+            //            storageConnection.close();
+
+            logger.info("Basic Customer data Written Successfully.");
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -134,7 +160,17 @@ public class StoreManagment {
         Table table = storageConnection.getTable(pathPath);
 
         LogScanner logScanner =
-                table.newScan().project(List.of("id", "name", "bithdata")).createLogScanner();
+                table.newScan()
+                        .project(
+                                List.of(
+                                        "id",
+                                        "name",
+                                        "address",
+                                        "city",
+                                        "birthdate",
+                                        "createdAt",
+                                        "updatedAt"))
+                        .createLogScanner();
 
         int numBuckets = table.getTableInfo().getNumBuckets();
         for (int i = 0; i < numBuckets; i++) {

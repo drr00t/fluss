@@ -18,36 +18,33 @@
 # Zoopeeker service
 
 services:
-  zoo1:
+  zookeeper:
     image: zookeeper:3.9.2
     restart: always
-    hostname: zoo1
-    container_name: zoo1
-    ports:
-      - "2181:2181"
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181
+    hostname: zookeeper
+    container_name: zookeeper
     networks:
       - fluss-net
 
   # Fluss services
 
-  coordinator:
+  coordinator-server:
     image: fluss/fluss:0.7.0
     hostname: coordinator-server
     container_name: coordinator-server
-    command: [ "coordinatorServer" ]
+    command: coordinatorServer
     depends_on:
-      - zoo1
-    ports:
-      - "9123:9123"
+      - zookeeper
     environment:
-      FLUSS_PROPERTIES: |
-        zookeeper.address: zoo1:2181
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
         bind.listeners: INTERNAL://coordinator-server:0, CLIENT://coordinator-server:9123
         advertised.listeners: CLIENT://localhost:9123
         internal.listener.name: INTERNAL
+        remote.data.dir: /tmp/fluss/remote-data
+    ports:
+      - "9123:9123"
     networks:
       - fluss-net
 
@@ -55,76 +52,77 @@ services:
     image: fluss/fluss:0.7.0
     hostname: tablet-server-0
     container_name: tablet-server-0
-    command: [ "tabletServer" ]
+    command: tabletServer
     depends_on:
-      - coordinator
-    ports:
-      - "9124:9123"
+      - coordinator-server
     environment:
-      FLUSS_PROPERTIES: |
-        zookeeper.address: zoo1:2181
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
         bind.listeners: INTERNAL://tablet-server-0:0, CLIENT://tablet-server-0:9123
-        advertised.listeners: CLIENT://localhost:9123
+        advertised.listeners: CLIENT://localhost:9124
         internal.listener.name: INTERNAL
         tablet-server.id: 0
         kv.snapshot.interval: 0s
-        data.dir: /tmp/fluss/data
+        data.dir: /tmp/fluss/data/tablet-server-0
         remote.data.dir: /tmp/fluss/remote-data
+    ports:
+      - "9124:9123"
+    volumes:
+      - shared-tmpfs:/tmp/fluss
     networks:
       - fluss-net
-    volumes:
-      - ./fluss-data/0:/tmp/fluss
-      - ./fluss-data-remote/0:/tmp/fluss/remote-data
 
   tablet-server-1:
     image: fluss/fluss:0.7.0
     hostname: tablet-server-1
     container_name: tablet-server-1
-    command: [ "tabletServer" ]
+    command: tabletServer
     depends_on:
-      - coordinator
-    ports:
-      - "9125:9123"
+      - coordinator-server
     environment:
-      FLUSS_PROPERTIES: |
-        zookeeper.address: zoo1:2181
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
         bind.listeners: INTERNAL://tablet-server-1:0, CLIENT://tablet-server-1:9123
-        advertised.listeners: CLIENT://localhost:9123
+        advertised.listeners: CLIENT://localhost:9125
         internal.listener.name: INTERNAL
         tablet-server.id: 1
         kv.snapshot.interval: 0s
-        data.dir: /tmp/fluss/data
+        data.dir: /tmp/fluss/data/tablet-server-1
         remote.data.dir: /tmp/fluss/remote-data
+    ports:
+      - "9125:9123"
+    volumes:
+      - shared-tmpfs:/tmp/fluss
     networks:
       - fluss-net
-    volumes:
-      - ./fluss-data/1:/tmp/fluss
-      - ./fluss-data-remote/1:/tmp/fluss/remote-data
 
   tablet-server-2:
     image: fluss/fluss:0.7.0
     hostname: tablet-server-2
     container_name: tablet-server-2
-    command: [ "tabletServer" ]
+    command: tabletServer
     depends_on:
-      - coordinator
-    ports:
-      - "9126:9123"
+      - coordinator-server
     environment:
-      FLUSS_PROPERTIES: |
-        zookeeper.address: zoo1:2181
+      - |
+        FLUSS_PROPERTIES=
+        zookeeper.address: zookeeper:2181
         bind.listeners: INTERNAL://tablet-server-2:0, CLIENT://tablet-server-2:9123
-        advertised.listeners: CLIENT://localhost:9123
+        advertised.listeners: CLIENT://localhost:9126
         internal.listener.name: INTERNAL
         tablet-server.id: 2
         kv.snapshot.interval: 0s
-        data.dir: /tmp/fluss/data
+        data.dir: /tmp/fluss/data/tablet-server-2
         remote.data.dir: /tmp/fluss/remote-data
+    ports:
+      - "9126:9123"
+    volumes:
+      - shared-tmpfs:/tmp/fluss
     networks:
       - fluss-net
-    volumes:
-      - ./fluss-data/2:/tmp/fluss
-      - ./fluss-data-remote/2:/tmp/fluss/remote-data
+
 
 #  jobmanager:
 #    build: .
