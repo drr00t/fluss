@@ -25,8 +25,8 @@ import com.alibaba.fluss.client.table.scanner.ScanRecord;
 import com.alibaba.fluss.client.table.scanner.log.LogScanner;
 import com.alibaba.fluss.client.table.scanner.log.ScanRecords;
 import com.alibaba.fluss.client.table.writer.AppendWriter;
-import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.CustomerFakerGenerator;
-import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.TableMappings;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.CustomerFakerDataGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.MappingTables;
 import com.alibaba.fluss.metadata.DatabaseDescriptor;
 import com.alibaba.fluss.metadata.DatabaseInfo;
 import com.alibaba.fluss.metadata.TableBucket;
@@ -108,12 +108,12 @@ public class StoreManagment {
         Table table = storageConnection.getTable(pathPath);
         AppendWriter writer = table.newAppend().createWriter();
 
-        CustomerFakerGenerator dataGenerator = new CustomerFakerGenerator();
+        CustomerFakerDataGenerator dataGenerator = new CustomerFakerDataGenerator();
         dataGenerator
                 .generateMany(customerCount)
                 .forEach(
                         reading -> {
-                            GenericRow row = TableMappings.ofCustomer(reading);
+                            GenericRow row = MappingTables.ofCustomer(reading);
                             writer.append(row);
                         });
         writer.flush();
@@ -121,13 +121,6 @@ public class StoreManagment {
         logger.info("Customer data Written Successfully.");
 
         logger.info("Sensor Information Successfully.");
-
-        //        try {
-        //            admin.close();
-        //            storageConnection.close();
-        //        } catch (Exception e) {
-        //            throw new RuntimeException(e);
-        //        }
     }
 
     public void writingBasicCustomerData(TablePath pathPath, int customerCount) {
@@ -135,12 +128,12 @@ public class StoreManagment {
         Table table = storageConnection.getTable(pathPath);
         AppendWriter writer = table.newAppend().createWriter();
 
-        CustomerFakerGenerator dataGenerator = new CustomerFakerGenerator();
+        CustomerFakerDataGenerator dataGenerator = new CustomerFakerDataGenerator();
         dataGenerator
                 .generateMany(customerCount)
                 .forEach(
                         reading -> {
-                            GenericRow row = TableMappings.ofCustomer(reading);
+                            GenericRow row = MappingTables.ofCustomer(reading);
                             writer.append(row);
                         });
 

@@ -16,11 +16,18 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary.persistence;
+package com.alibaba.fluss.examples.ecommerce.control.datageneration;
+
+import java.util.List;
 
 /**
- * This class serves as a repository for managing e-commerce entities. It provides methods to
- * interact with the underlying data store, allowing for operations such as saving, updating,
- * deleting, and retrieving entities.
+ * Repository interface for generating entities of type TEntity. This interface defines methods to
+ * generate a single entity or a set of entities.
+ *
+ * @param <TEntity> the type of entity to be generated
  */
-public class Repository {}
+public interface DataGenerator<TEntity> {
+    TEntity generateOne();
+
+    List<TEntity> generateMany(int count);
+}

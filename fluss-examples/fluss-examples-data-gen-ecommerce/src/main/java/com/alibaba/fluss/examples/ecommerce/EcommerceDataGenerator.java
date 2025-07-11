@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary;
+package com.alibaba.fluss.examples.ecommerce;
 
 import com.alibaba.fluss.client.Connection;
-import com.alibaba.fluss.examples.ecommerce.boundary.persistence.StoreManagment;
-import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.EcommerceDatabase;
+import com.alibaba.fluss.examples.ecommerce.boundary.persistence.PrepareDatabase;
+import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Descriptors;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
+import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.CustomerProducer;
 
 import org.slf4j.Logger;
 
@@ -36,26 +37,35 @@ public class EcommerceDataGenerator {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         logger.info("E-commerce Data Generator is starting...");
-        String bootstrapServers = "localhost:9123"; // Example bootstrap server
-        Connection connection = EcommerceDatabase.getConnection(bootstrapServers);
 
-        StoreManagment management = StoreManagment.setupWith(connection);
+        String bootstrapServers =
+                "localhost:9123,localhost:9124,localhost:9125"; // Example bootstrap server
 
-        management.setupDatabase(
-                EcommerceDatabase.DB_NAME, EcommerceDatabase.ECOMMERCE_DB_DESCRIPTOR);
+        if (args.length > 0) {
+            logger.info("Default server host changed via CLI to: {}", args[0]);
+            bootstrapServers = args[0];
+        } else if (System.getenv("FLUSS_HOST") != null) {
+            logger.info("Default server host changed via ENV to: {}", System.getenv("FLUSS_HOST"));
+            bootstrapServers = System.getenv("FLUSS_HOST");
+        }
+
+        Connection connection = Descriptors.getConnection(bootstrapServers);
+
+        PrepareDatabase management = PrepareDatabase.setupWith(connection);
+
+        management.setupDatabase(Descriptors.DB_NAME, Descriptors.ECOMMERCE_DB_DESCRIPTOR);
 
         management.setupTable(
-                EcommerceDatabase.CUSTOMER_TABLE_DESCRIPTOR, Tables.CUSTOMER_TABLE_PATH);
+                Descriptors.CUSTOMER_TABLE_DESCRIPTOR, Tables.CUSTOMER_TABLE_PATH, true);
 
         logger.info("E-commerce Data Generator setup completed successfully.");
 
         int customersToGenerate = 10000; // Example customer count
         logger.info("Let's Generate {} Customers.", customersToGenerate);
-        management.writingCustomerData(Tables.CUSTOMER_TABLE_PATH, 10000);
+
+        CustomerProducer cusProducer = CustomerProducer.setupWith(connection);
+        cusProducer.produceCustomerData(customersToGenerate);
+
         logger.info("{} Customers written to database.", customersToGenerate);
-
-        logger.info("Start to reading customer data from database.");
-
-        management.readingCustomerData(Tables.CUSTOMER_TABLE_PATH);
     }
 }

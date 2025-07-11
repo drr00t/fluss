@@ -16,18 +16,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.boundary.datagenerator;
-
-import java.util.List;
+package com.alibaba.fluss.examples.ecommerce.control.persistence;
 
 /**
- * Repository interface for generating entities of type TEntity. This interface defines methods to
- * generate a single entity or a set of entities.
- *
- * @param <TEntity> the type of entity to be generated
+ * * CustomerManager is responsible for managing customer-related operations in the e-commerce
+ * system. It includes methods for adding, updating, deleting, and retrieving customer information.
  */
-public interface Generator<TEntity> {
-    TEntity generateOne();
+public class CustomerManager {
+    // This class is responsible for managing customer-related operations.
+    // It can include methods for adding, updating, deleting, and retrieving customer information.
+    // For example:
 
-    List<TEntity> generateMany(int count);
+    public CustomerManager() {
+        // Constructor logic, if needed
+    }
+
+    public void updateCustomer(long customerId, String name, String email) {
+        // Logic to update an existing customer's information
+    }
+
+    public void getCustomer(long customerId) {
+        // Logic to retrieve a customer's information
+    }
 }

@@ -18,8 +18,8 @@
 
 package com.alibaba.fluss.examples.ecommerce.boundary.model;
 
-import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.CustomerFakerGenerator;
-import com.alibaba.fluss.examples.ecommerce.boundary.datagenerator.ProductFakerGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.CustomerFakerDataGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.ProductFakerDataGenerator;
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
 import com.alibaba.fluss.examples.ecommerce.entity.Product;
 import com.alibaba.fluss.row.BinaryString;
@@ -70,7 +70,7 @@ class FakerGeneratorTest {
     @Test
     @DisplayName("Generate Fake Customer")
     void generateFakeCustomer() {
-        CustomerFakerGenerator respotiry = new CustomerFakerGenerator();
+        CustomerFakerDataGenerator respotiry = new CustomerFakerDataGenerator();
 
         Customer customer = respotiry.generateOne();
 
@@ -83,7 +83,7 @@ class FakerGeneratorTest {
 
     @Test
     void generateManyCustomers() {
-        CustomerFakerGenerator respotiry = new CustomerFakerGenerator();
+        CustomerFakerDataGenerator respotiry = new CustomerFakerDataGenerator();
 
         int count = 1000;
         List<Customer> customers = respotiry.generateMany(count);
@@ -101,7 +101,7 @@ class FakerGeneratorTest {
 
     @Test
     void generateOneProduct() {
-        ProductFakerGenerator repository = new ProductFakerGenerator();
+        ProductFakerDataGenerator repository = new ProductFakerDataGenerator();
 
         Product product = repository.generateOne();
 
@@ -114,7 +114,7 @@ class FakerGeneratorTest {
 
     @Test
     void generateManyProducts() {
-        ProductFakerGenerator repository = new ProductFakerGenerator();
+        ProductFakerDataGenerator repository = new ProductFakerDataGenerator();
 
         int count = 1000;
         List<Product> products = repository.generateMany(count);

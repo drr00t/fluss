@@ -16,26 +16,11 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples.ecommerce.control;
+package com.alibaba.fluss.examples.ecommerce.control.persistence;
 
 /**
- * * CustomerManager is responsible for managing customer-related operations in the e-commerce
- * system. It includes methods for adding, updating, deleting, and retrieving customer information.
+ * This class serves as a repository for managing e-commerce entities. It provides methods to
+ * interact with the underlying data store, allowing for operations such as saving, updating,
+ * deleting, and retrieving entities.
  */
-public class CustomerManager {
-    // This class is responsible for managing customer-related operations.
-    // It can include methods for adding, updating, deleting, and retrieving customer information.
-    // For example:
-
-    public CustomerManager() {
-        // Constructor logic, if needed
-    }
-
-    public void updateCustomer(long customerId, String name, String email) {
-        // Logic to update an existing customer's information
-    }
-
-    public void getCustomer(long customerId) {
-        // Logic to retrieve a customer's information
-    }
-}
+public class Repository {}

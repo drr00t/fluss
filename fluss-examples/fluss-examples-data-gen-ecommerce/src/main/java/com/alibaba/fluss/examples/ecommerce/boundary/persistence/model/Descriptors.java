@@ -30,7 +30,7 @@ import com.alibaba.fluss.metadata.TableDescriptor;
  * currently does not contain any fields or methods, but can be extended in the future to include
  * table definitions or other related functionality.
  */
-public class EcommerceDatabase {
+public class Descriptors {
     public static final String DB_NAME = "ecommerce";
 
     public static final DatabaseDescriptor ECOMMERCE_DB_DESCRIPTOR =

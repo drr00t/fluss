@@ -37,6 +37,7 @@ public class Schemas {
                     .column("city", DataTypes.STRING())
                     .column("createdAt", DataTypes.TIMESTAMP())
                     .column("updatedAt", DataTypes.TIMESTAMP())
+                    .primaryKey("id")
                     .build();
 
     public static final Schema PRODUCT_SCHEMA =
@@ -46,6 +47,7 @@ public class Schemas {
                     .column("description", DataTypes.STRING())
                     .column("price", MONEY_TYPE)
                     .column("category", DataTypes.STRING())
+                    .primaryKey("id")
                     .build();
 
     public static final Schema ORDER_SCHEMA =
@@ -54,6 +56,7 @@ public class Schemas {
                     .column("customerId", DataTypes.INT())
                     .column("orderDate", DataTypes.TIMESTAMP())
                     .column("total", MONEY_TYPE)
+                    .primaryKey("id")
                     .build();
 
     public static final Schema SALE_SCHEMA =
@@ -63,5 +66,6 @@ public class Schemas {
                     .column("productId", DataTypes.BIGINT())
                     .column("quantity", DataTypes.BIGINT())
                     .column("price", MONEY_TYPE)
+                    .primaryKey("id")
                     .build();
 }

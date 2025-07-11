@@ -19,6 +19,7 @@
 package com.alibaba.fluss.examples.ecommerce.boundary.persistence.model;
 
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.examples.ecommerce.entity.Product;
 import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.TimestampNtz;
@@ -27,7 +28,7 @@ import com.alibaba.fluss.row.TimestampNtz;
  * This class provides methods to convert domain entities into Fluss GenericRow objects for
  * persistence in the database.
  */
-public class TableMappings {
+public class MappingTables {
     public static GenericRow ofCustomer(Customer customer) {
         GenericRow row = new GenericRow(Customer.class.getDeclaredFields().length);
         row.setField(0, customer.id());
@@ -37,6 +38,12 @@ public class TableMappings {
         row.setField(4, BinaryString.fromString(customer.city()));
         row.setField(5, TimestampNtz.fromLocalDateTime(customer.createdAt()));
         row.setField(6, TimestampNtz.fromLocalDateTime(customer.updatedAt()));
+        return row;
+    }
+
+    public static GenericRow ofProduct(Product product) {
+        GenericRow row = new GenericRow(Product.class.getDeclaredFields().length);
+
         return row;
     }
 }
