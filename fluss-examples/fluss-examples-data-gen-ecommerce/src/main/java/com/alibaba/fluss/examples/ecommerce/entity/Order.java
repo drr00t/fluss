@@ -18,6 +18,7 @@
 
 package com.alibaba.fluss.examples.ecommerce.entity;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -26,10 +27,12 @@ import java.util.Objects;
  * amount.
  */
 public class Order {
-    private long id;
-    private long customerId;
-    private LocalDateTime orderDate;
-    private Double total;
+    private final long id;
+    private final long customerId;
+    private final long quantity;
+    private final long productId;
+    private final LocalDateTime orderDate;
+    private final Double amount;
 
     public long id() {
         return id;
@@ -39,28 +42,55 @@ public class Order {
         return customerId;
     }
 
+    public long quantity() {
+        return quantity;
+    }
+
+    public long productId() {
+        return productId;
+    }
+
     public LocalDateTime orderDate() {
         return orderDate;
     }
 
-    public Double total() {
-        return total;
+    public Double amount() {
+        return amount;
     }
 
-    public Order(long id, long customerId, LocalDateTime orderDate, Double total) {
+    public Order(
+            long id,
+            long customerId,
+            long quantity,
+            long productId,
+            LocalDateTime orderDate,
+            Double amount) {
         this.id = id;
         this.customerId = customerId;
+        this.quantity = quantity;
+        this.productId = productId;
         this.orderDate = orderDate;
-        this.total = total;
+        this.amount = amount;
     }
 
-    public static Order of(long id, long customerId, LocalDateTime orderDate, Double total) {
-        return new Order(id, customerId, orderDate, total);
+    public static Order of(
+            long id,
+            long customerId,
+            long quantity,
+            long productId,
+            LocalDateTime orderDate,
+            Double amount) {
+        return new Order(id, customerId, quantity, productId, orderDate, amount);
     }
 
-    public static Order create(long customerId, String orderDate, Double total) {
-        long oid = System.currentTimeMillis();
-        return new Order(oid, customerId, LocalDateTime.parse(orderDate), total);
+    public static Order create(
+            long customerId,
+            long quantity,
+            long productId,
+            LocalDateTime orderDate,
+            Double amount) {
+        long oid = Instant.now().toEpochMilli() ^ System.nanoTime();
+        return new Order(oid, customerId, quantity, productId, orderDate, amount);
     }
 
     @Override
@@ -71,12 +101,13 @@ public class Order {
         Order order = (Order) o;
         return Objects.equals(id, order.id)
                 && Objects.equals(customerId, order.customerId)
+                && Objects.equals(productId, order.productId)
                 && Objects.equals(orderDate, order.orderDate)
-                && Objects.equals(total, order.total);
+                && Objects.equals(amount, order.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, orderDate, total);
+        return Objects.hash(id, customerId, quantity, productId, orderDate, amount);
     }
 }

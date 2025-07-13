@@ -18,10 +18,6 @@
 
 package com.alibaba.fluss.examples.ecommerce.boundary.persistence.model;
 
-import com.alibaba.fluss.client.Connection;
-import com.alibaba.fluss.client.ConnectionFactory;
-import com.alibaba.fluss.config.ConfigOptions;
-import com.alibaba.fluss.config.Configuration;
 import com.alibaba.fluss.metadata.DatabaseDescriptor;
 import com.alibaba.fluss.metadata.TableDescriptor;
 
@@ -44,6 +40,8 @@ public class Descriptors {
                     .schema(Schemas.CUSTOMER_SCHEMA)
                     .distributedBy(3, "id")
                     .comment("Customer table")
+                    .property("table.merge-engine", "versioned")
+                    .property("table.merge-engine.versioned.ver-column", "updatedAt")
                     .build();
 
     public static final TableDescriptor PRODUCT_TABLE_DESCRIPTOR =
@@ -66,11 +64,4 @@ public class Descriptors {
                     .distributedBy(3, "id")
                     .comment("Sale table")
                     .build();
-
-    public static Connection getConnection(String bootstrapServers) {
-        Configuration conf = new Configuration();
-        conf.setString(ConfigOptions.BOOTSTRAP_SERVERS.key(), bootstrapServers);
-
-        return ConnectionFactory.createConnection(conf);
-    }
 }

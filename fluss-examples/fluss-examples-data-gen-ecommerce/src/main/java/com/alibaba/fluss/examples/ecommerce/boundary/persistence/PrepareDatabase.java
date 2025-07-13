@@ -19,7 +19,10 @@
 package com.alibaba.fluss.examples.ecommerce.boundary.persistence;
 
 import com.alibaba.fluss.client.Connection;
+import com.alibaba.fluss.client.ConnectionFactory;
 import com.alibaba.fluss.client.admin.Admin;
+import com.alibaba.fluss.config.ConfigOptions;
+import com.alibaba.fluss.config.Configuration;
 import com.alibaba.fluss.metadata.DatabaseDescriptor;
 import com.alibaba.fluss.metadata.DatabaseInfo;
 import com.alibaba.fluss.metadata.TableDescriptor;
@@ -44,6 +47,13 @@ public class PrepareDatabase {
     public PrepareDatabase(Connection storageConnection) {
         this.admin = storageConnection.getAdmin();
         this.storageConnection = storageConnection;
+    }
+
+    public static Connection getConnection(String bootstrapServers) {
+        Configuration conf = new Configuration();
+        conf.setString(ConfigOptions.BOOTSTRAP_SERVERS.key(), bootstrapServers);
+
+        return ConnectionFactory.createConnection(conf);
     }
 
     public static PrepareDatabase setupWith(Connection storageConnection) {

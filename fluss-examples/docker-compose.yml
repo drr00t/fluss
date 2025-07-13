@@ -124,37 +124,37 @@ services:
       - fluss-net
 
 
-#  jobmanager:
-#    build: .
-#    hostname: jobmanager
-#    container_name: jobmanager
-#    command: [ "jobmanager" ]
-#    ports:
-#      - "8081:8081"
-#    environment:
-#      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-#    networks:
-#      - fluss-net
-#    volumes:
-#      - shared-tmpfs:/tmp/paimon
-#
-#  taskmanager:
-#    build: .
-#    hostname: taskmanager
-#    container_name: taskmanager
-#    command: [ "taskmanager" ]
-#    ports:
-#      - "6121:6121"
-#      - "6122:6122"
-#      - "8082:8082"
-#    depends_on:
-#      - jobmanager
-#    environment:
-#      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-#    networks:
-#      - fluss-net
-#    volumes:
-#      - shared-tmpfs:/tmp/paimon
+  jobmanager:
+    build: .
+    hostname: jobmanager
+    container_name: jobmanager
+    command: [ "jobmanager" ]
+    ports:
+      - "8081:8081"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    networks:
+      - fluss-net
+    volumes:
+      - shared-tmpfs:/tmp/paimon
+
+  taskmanager:
+    build: .
+    hostname: taskmanager
+    container_name: taskmanager
+    command: [ "taskmanager" ]
+    ports:
+      - "6121:6121"
+      - "6122:6122"
+      - "8082:8082"
+    depends_on:
+      - jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    networks:
+      - fluss-net
+    volumes:
+      - shared-tmpfs:/tmp/paimon
 
 volumes:
   shared-tmpfs:

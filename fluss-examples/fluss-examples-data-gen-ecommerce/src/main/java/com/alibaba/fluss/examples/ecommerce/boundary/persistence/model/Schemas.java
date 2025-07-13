@@ -53,10 +53,10 @@ public class Schemas {
     public static final Schema ORDER_SCHEMA =
             Schema.newBuilder()
                     .column("id", DataTypes.BIGINT())
-                    .column("customerId", DataTypes.INT())
+                    .column("customerId", DataTypes.BIGINT())
+                    .column("productId", DataTypes.BIGINT())
                     .column("orderDate", DataTypes.TIMESTAMP())
-                    .column("total", MONEY_TYPE)
-                    .primaryKey("id")
+                    .column("amount", MONEY_TYPE)
                     .build();
 
     public static final Schema SALE_SCHEMA =
@@ -66,6 +66,5 @@ public class Schemas {
                     .column("productId", DataTypes.BIGINT())
                     .column("quantity", DataTypes.BIGINT())
                     .column("price", MONEY_TYPE)
-                    .primaryKey("id")
                     .build();
 }

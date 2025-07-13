@@ -26,11 +26,12 @@ import java.util.Objects;
  * amount.
  */
 public class Sale {
-    private long id;
-    private long orderId;
-    private long productId;
-    private LocalDateTime saleDate;
-    private Double amount;
+    private final long id;
+    private final long orderId;
+    private final long productId;
+    private final long quantity;
+    private final LocalDateTime saleDate;
+    private final Double amount;
 
     public long id() {
         return id;
@@ -44,6 +45,10 @@ public class Sale {
         return productId;
     }
 
+    public long quantity() {
+        return quantity;
+    }
+
     public LocalDateTime saleDate() {
         return saleDate;
     }
@@ -52,22 +57,35 @@ public class Sale {
         return amount;
     }
 
-    public Sale(long id, long orderId, long productId, LocalDateTime saleDate, Double amount) {
+    public Sale(
+            long id,
+            long orderId,
+            long productId,
+            long quantity,
+            LocalDateTime saleDate,
+            Double amount) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
+        this.quantity = quantity;
         this.saleDate = saleDate;
         this.amount = amount;
     }
 
     public static Sale of(
-            long id, long orderId, long productId, LocalDateTime saleDate, Double amount) {
-        return new Sale(id, orderId, productId, saleDate, amount);
+            long id,
+            long orderId,
+            long productId,
+            long quantity,
+            LocalDateTime saleDate,
+            Double amount) {
+        return new Sale(id, orderId, productId, quantity, saleDate, amount);
     }
 
-    public static Sale create(long orderId, long productId, LocalDateTime saleDate, Double amount) {
+    public static Sale create(
+            long orderId, long productId, long quantity, LocalDateTime saleDate, Double amount) {
         long sid = System.currentTimeMillis();
-        return new Sale(sid, orderId, productId, saleDate, amount);
+        return new Sale(sid, orderId, productId, quantity, saleDate, amount);
     }
 
     @Override
@@ -80,6 +98,7 @@ public class Sale {
                 && Objects.equals(orderId, sale.orderId)
                 && Objects.equals(productId, sale.productId)
                 && Objects.equals(saleDate, sale.saleDate)
+                && Objects.equals(quantity, sale.quantity)
                 && Objects.equals(amount, sale.amount);
     }
 

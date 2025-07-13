@@ -23,6 +23,7 @@ import com.alibaba.fluss.examples.ecommerce.boundary.persistence.PrepareDatabase
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Descriptors;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.CustomerProducer;
+import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.ProductProducer;
 
 import org.slf4j.Logger;
 
@@ -49,7 +50,7 @@ public class EcommerceDataGenerator {
             bootstrapServers = System.getenv("FLUSS_HOST");
         }
 
-        Connection connection = Descriptors.getConnection(bootstrapServers);
+        Connection connection = PrepareDatabase.getConnection(bootstrapServers);
 
         PrepareDatabase management = PrepareDatabase.setupWith(connection);
 
@@ -67,5 +68,14 @@ public class EcommerceDataGenerator {
         cusProducer.produceCustomerData(customersToGenerate);
 
         logger.info("{} Customers written to database.", customersToGenerate);
+
+        ProductProducer prodProducer = ProductProducer.setupWith(connection);
+        prodProducer.produceProductData(1000);
+
+        logger.info("{} Products written to database.", customersToGenerate);
+
+        logger.info("{} Orders written to database.", customersToGenerate);
+
+        logger.info("{} Sales written to database.", customersToGenerate);
     }
 }
