@@ -56,15 +56,16 @@ public class Schemas {
                     .column("customerId", DataTypes.BIGINT())
                     .column("productId", DataTypes.BIGINT())
                     .column("orderDate", DataTypes.TIMESTAMP())
+                    .column("quantity", DataTypes.BIGINT())
                     .column("amount", MONEY_TYPE)
                     .build();
 
     public static final Schema SALE_SCHEMA =
             Schema.newBuilder()
-                    .column("id", DataTypes.STRING())
+                    .column("id", DataTypes.BIGINT())
                     .column("orderId", DataTypes.BIGINT())
                     .column("productId", DataTypes.BIGINT())
-                    .column("quantity", DataTypes.BIGINT())
                     .column("price", MONEY_TYPE)
+                    .column("saleDate", DataTypes.TIMESTAMP())
                     .build();
 }

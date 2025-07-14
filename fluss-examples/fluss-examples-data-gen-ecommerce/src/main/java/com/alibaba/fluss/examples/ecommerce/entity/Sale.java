@@ -30,7 +30,6 @@ public class Sale {
     private final long id;
     private final long orderId;
     private final long productId;
-    private final long quantity;
     private final LocalDateTime saleDate;
     private final BigDecimal amount;
 
@@ -46,10 +45,6 @@ public class Sale {
         return productId;
     }
 
-    public long quantity() {
-        return quantity;
-    }
-
     public LocalDateTime saleDate() {
         return saleDate;
     }
@@ -58,39 +53,23 @@ public class Sale {
         return amount;
     }
 
-    public Sale(
-            long id,
-            long orderId,
-            long productId,
-            long quantity,
-            LocalDateTime saleDate,
-            BigDecimal amount) {
+    public Sale(long id, long orderId, long productId, LocalDateTime saleDate, BigDecimal amount) {
         this.id = id;
         this.orderId = orderId;
         this.productId = productId;
-        this.quantity = quantity;
         this.saleDate = saleDate;
         this.amount = amount;
     }
 
     public static Sale of(
-            long id,
-            long orderId,
-            long productId,
-            long quantity,
-            LocalDateTime saleDate,
-            BigDecimal amount) {
-        return new Sale(id, orderId, productId, quantity, saleDate, amount);
+            long id, long orderId, long productId, LocalDateTime saleDate, BigDecimal amount) {
+        return new Sale(id, orderId, productId, saleDate, amount);
     }
 
     public static Sale create(
-            long orderId,
-            long productId,
-            long quantity,
-            LocalDateTime saleDate,
-            BigDecimal amount) {
+            long orderId, long productId, LocalDateTime saleDate, BigDecimal amount) {
         long sid = System.currentTimeMillis();
-        return new Sale(sid, orderId, productId, quantity, saleDate, amount);
+        return new Sale(sid, orderId, productId, saleDate, amount);
     }
 
     @Override
@@ -103,7 +82,6 @@ public class Sale {
                 && Objects.equals(orderId, sale.orderId)
                 && Objects.equals(productId, sale.productId)
                 && Objects.equals(saleDate, sale.saleDate)
-                && Objects.equals(quantity, sale.quantity)
                 && Objects.equals(amount, sale.amount);
     }
 

@@ -55,21 +55,24 @@ public class MappingTables {
     }
 
     public static GenericRow ofOrder(Order order) {
-        GenericRow row = new GenericRow(4);
+        GenericRow row = new GenericRow(Order.class.getDeclaredFields().length);
         row.setField(0, order.id());
         row.setField(1, order.customerId());
-        row.setField(2, TimestampNtz.fromLocalDateTime(order.orderDate()));
-        row.setField(3, Decimal.fromBigDecimal(order.amount(), 9, 6));
+        row.setField(2, order.productId());
+        row.setField(3, TimestampNtz.fromLocalDateTime(order.orderDate()));
+        row.setField(4, order.quantity());
+        row.setField(5, Decimal.fromBigDecimal(order.amount(), 9, 6));
+
         return row;
     }
 
     public static GenericRow ofSale(Sale sale) {
-        GenericRow row = new GenericRow(5);
+        GenericRow row = new GenericRow(Sale.class.getDeclaredFields().length);
         row.setField(0, sale.id());
         row.setField(1, sale.orderId());
         row.setField(2, sale.productId());
-        row.setField(3, sale.quantity());
-        row.setField(4, sale.amount());
+        row.setField(3, Decimal.fromBigDecimal(sale.amount(), 9, 6));
+        row.setField(4, TimestampNtz.fromLocalDateTime(sale.saleDate()));
         return row;
     }
 }

@@ -65,18 +65,22 @@ public class CustomerProducer extends Operation {
     }
 
     public void produceCustomerData(int customerToProduce) {
-        datagenerator.generateMany(customerToProduce);
-        datagenerator
-                .getData()
-                .forEach(
-                        customer -> {
-                            GenericRow row = MappingTables.ofCustomer(customer);
-                            upsertWriter.upsert(row);
-                        });
+        try {
+            datagenerator.generateMany(customerToProduce);
+            datagenerator
+                    .getData()
+                    .forEach(
+                            customer -> {
+                                GenericRow row = MappingTables.ofCustomer(customer);
+                                upsertWriter.upsert(row);
+                            });
 
-        upsertWriter.flush();
+            upsertWriter.flush();
 
-        logger.info("Customer data Successfully written.");
+            logger.info("Customer data Successfully written.");
+        } catch (Exception e) {
+            logger.error("Error customer {0}", e);
+        }
     }
 
     public void readingCustomerData(TablePath pathPath) {

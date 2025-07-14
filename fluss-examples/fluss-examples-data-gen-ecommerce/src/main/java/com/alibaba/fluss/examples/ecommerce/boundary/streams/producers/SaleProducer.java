@@ -54,17 +54,22 @@ public class SaleProducer extends Operation {
     }
 
     public void produceOrderData(int saleToProduce) {
-        datagenerator.generateMany(saleToProduce);
-        datagenerator
-                .getData()
-                .forEach(
-                        sale -> {
-                            GenericRow row = MappingTables.ofSale(sale);
-                            appendWriter.append(row);
-                        });
+        try {
+            datagenerator.generateMany(saleToProduce);
+            datagenerator
+                    .getData()
+                    .forEach(
+                            sale -> {
+                                GenericRow row = MappingTables.ofSale(sale);
+                                appendWriter.append(row);
+                            });
 
-        appendWriter.flush();
+            appendWriter.flush();
 
-        logger.info("Sale data Successfully written.");
+            logger.info("Sale data Successfully written.");
+
+        } catch (Exception e) {
+            logger.error("Error while writing Sale data: ", e);
+        }
     }
 }

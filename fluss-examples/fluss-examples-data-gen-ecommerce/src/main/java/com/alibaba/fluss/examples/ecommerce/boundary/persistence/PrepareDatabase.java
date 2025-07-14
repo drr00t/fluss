@@ -82,8 +82,7 @@ public class PrepareDatabase {
         if (dropIfExists && admin.tableExists(tablePath).get()) {
             logger.info("Table {} already exists, and will be dropped.", tablePath);
             admin.dropTable(tablePath, true).get();
-            Thread.sleep(1000); // Wait for the table to be dropped
-            return;
+            Thread.sleep(2000); // Wait for the table to be dropped
         }
 
         admin.createTable(tablePath, descriptor, true).get();
@@ -98,7 +97,7 @@ public class PrepareDatabase {
                 break;
             }
 
-            Thread.sleep(1000); // Wait for the table to be propagated
+            Thread.sleep(2000); // Wait for the table to be propagated
         }
 
         TableInfo tableInfo = storageConnection.getTable(tablePath).getTableInfo();

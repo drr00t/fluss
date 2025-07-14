@@ -24,6 +24,7 @@ import com.alibaba.fluss.examples.ecommerce.entity.Sale;
 
 import net.datafaker.Faker;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -58,9 +59,10 @@ public class SaleFakerDataGenerator implements DataGenerator<Sale> {
                                     return Sale.create(
                                             order.id(),
                                             order.productId(),
-                                            order.quantity(),
                                             orderDate,
-                                            order.amount());
+                                            order.amount()
+                                                    .multiply(
+                                                            BigDecimal.valueOf(order.quantity())));
                                 })
                         .maxLen(count)
                         .generate();

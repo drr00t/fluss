@@ -65,18 +65,22 @@ public class ProductProducer extends Operation {
     }
 
     public void produceProductData(int productToProduce) {
-        datagenerator.generateMany(productToProduce);
-        datagenerator
-                .getData()
-                .forEach(
-                        product -> {
-                            GenericRow row = MappingTables.ofProduct(product);
-                            upsertWriter.upsert(row);
-                        });
+        try {
+            datagenerator.generateMany(productToProduce);
+            datagenerator
+                    .getData()
+                    .forEach(
+                            product -> {
+                                GenericRow row = MappingTables.ofProduct(product);
+                                upsertWriter.upsert(row);
+                            });
 
-        upsertWriter.flush();
+            upsertWriter.flush();
 
-        logger.info("Product data Successfully written.");
+            logger.info("Product data Successfully written.");
+        } catch (Exception e) {
+            logger.error("Error while producing product data: {0}", e);
+        }
     }
 
     public void readingProductData(TablePath pathPath) {
