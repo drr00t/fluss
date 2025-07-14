@@ -29,5 +29,7 @@ import java.util.List;
 public interface DataGenerator<TEntity> {
     TEntity generateOne();
 
-    List<TEntity> generateMany(int count);
+    void generateMany(int count);
+
+    List<TEntity> getData();
 }

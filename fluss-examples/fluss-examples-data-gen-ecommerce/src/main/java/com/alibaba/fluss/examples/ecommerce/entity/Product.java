@@ -18,6 +18,7 @@
 
 package com.alibaba.fluss.examples.ecommerce.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -27,7 +28,7 @@ public class Product {
     private long id;
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private String category;
 
     public long id() {
@@ -42,7 +43,7 @@ public class Product {
         return description;
     }
 
-    public Double price() {
+    public BigDecimal price() {
         return price;
     }
 
@@ -50,7 +51,7 @@ public class Product {
         return category;
     }
 
-    public Product(long id, String name, String description, Double price, String category) {
+    public Product(long id, String name, String description, BigDecimal price, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -59,11 +60,12 @@ public class Product {
     }
 
     public static Product of(
-            long id, String name, String description, Double price, String category) {
+            long id, String name, String description, BigDecimal price, String category) {
         return new Product(id, name, description, price, category);
     }
 
-    public static Product create(String name, String description, Double price, String category) {
+    public static Product create(
+            String name, String description, BigDecimal price, String category) {
         long pid = Instant.now().toEpochMilli() ^ System.nanoTime();
         return new Product(pid, name, description, price, category);
     }

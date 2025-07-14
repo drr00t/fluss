@@ -20,17 +20,15 @@ package com.alibaba.fluss.examples.ecommerce.boundary.streams.producers;
 
 import com.alibaba.fluss.client.Connection;
 import com.alibaba.fluss.client.table.writer.AppendWriter;
-import com.alibaba.fluss.examples.ecommerce.boundary.data.SaleFakerDataGenerator;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.MappingTables;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.Operation;
-import com.alibaba.fluss.examples.ecommerce.entity.Order;
+import com.alibaba.fluss.examples.ecommerce.control.datageneration.DataGenerator;
+import com.alibaba.fluss.examples.ecommerce.entity.Sale;
 import com.alibaba.fluss.row.GenericRow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * This class serves as a Data Access Object (DAO) for the e-commerce application. It is responsible
@@ -40,23 +38,25 @@ import java.util.List;
 public class SaleProducer extends Operation {
     private static final Logger logger = LoggerFactory.getLogger(SaleProducer.class);
     private final AppendWriter appendWriter;
+    private final DataGenerator<Sale> datagenerator;
 
-    public SaleProducer(Connection storageConnection) {
+    public SaleProducer(Connection storageConnection, DataGenerator<Sale> datagenerator) {
         super(storageConnection, Tables.SALE_TABLE_PATH);
         appendWriter = produceToTable.newAppend().createWriter();
+        this.datagenerator = datagenerator;
     }
 
-    public static SaleProducer setupWith(Connection connection) {
+    public static SaleProducer setupWith(Connection connection, DataGenerator<Sale> datagenerator) {
 
         logger.info("Initializing producer with connection: {}", connection);
 
-        return new SaleProducer(connection);
+        return new SaleProducer(connection, datagenerator);
     }
 
-    public void produceOrderData(List<Order> orders, int saleToProduce) {
-        SaleFakerDataGenerator dataGenerator = new SaleFakerDataGenerator(orders);
-        dataGenerator
-                .generateMany(saleToProduce)
+    public void produceOrderData(int saleToProduce) {
+        datagenerator.generateMany(saleToProduce);
+        datagenerator
+                .getData()
                 .forEach(
                         sale -> {
                             GenericRow row = MappingTables.ofSale(sale);

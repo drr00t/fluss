@@ -18,6 +18,7 @@
 
 package com.alibaba.fluss.examples.ecommerce.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class Order {
     private final long quantity;
     private final long productId;
     private final LocalDateTime orderDate;
-    private final Double amount;
+    private final BigDecimal amount;
 
     public long id() {
         return id;
@@ -54,7 +55,7 @@ public class Order {
         return orderDate;
     }
 
-    public Double amount() {
+    public BigDecimal amount() {
         return amount;
     }
 
@@ -64,7 +65,7 @@ public class Order {
             long quantity,
             long productId,
             LocalDateTime orderDate,
-            Double amount) {
+            BigDecimal amount) {
         this.id = id;
         this.customerId = customerId;
         this.quantity = quantity;
@@ -79,7 +80,7 @@ public class Order {
             long quantity,
             long productId,
             LocalDateTime orderDate,
-            Double amount) {
+            BigDecimal amount) {
         return new Order(id, customerId, quantity, productId, orderDate, amount);
     }
 
@@ -88,7 +89,7 @@ public class Order {
             long quantity,
             long productId,
             LocalDateTime orderDate,
-            Double amount) {
+            BigDecimal amount) {
         long oid = Instant.now().toEpochMilli() ^ System.nanoTime();
         return new Order(oid, customerId, quantity, productId, orderDate, amount);
     }

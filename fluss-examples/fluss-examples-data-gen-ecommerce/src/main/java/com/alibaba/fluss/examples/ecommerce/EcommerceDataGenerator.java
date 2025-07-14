@@ -19,12 +19,22 @@
 package com.alibaba.fluss.examples.ecommerce;
 
 import com.alibaba.fluss.client.Connection;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.CustomerFakerDataGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.OrderFakerDataGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.ProductFakerDataGenerator;
+import com.alibaba.fluss.examples.ecommerce.boundary.data.SaleFakerDataGenerator;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.PrepareDatabase;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Descriptors;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.CustomerProducer;
+import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.OrderProducer;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.ProductProducer;
-
+import com.alibaba.fluss.examples.ecommerce.boundary.streams.producers.SaleProducer;
+import com.alibaba.fluss.examples.ecommerce.control.datageneration.DataGenerator;
+import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.examples.ecommerce.entity.Order;
+import com.alibaba.fluss.examples.ecommerce.entity.Product;
+import com.alibaba.fluss.examples.ecommerce.entity.Sale;
 import org.slf4j.Logger;
 
 import java.util.concurrent.ExecutionException;
@@ -58,24 +68,52 @@ public class EcommerceDataGenerator {
 
         management.setupTable(
                 Descriptors.CUSTOMER_TABLE_DESCRIPTOR, Tables.CUSTOMER_TABLE_PATH, true);
+        management.setupTable(
+                Descriptors.PRODUCT_TABLE_DESCRIPTOR, Tables.PRODUCT_TABLE_PATH, true);
+
+        management.setupTable(Descriptors.ORDER_TABLE_DESCRIPTOR, Tables.ORDER_TABLE_PATH, true);
+
+        management.setupTable(Descriptors.SALE_TABLE_DESCRIPTOR, Tables.SALE_TABLE_PATH, true);
 
         logger.info("E-commerce Data Generator setup completed successfully.");
 
         int customersToGenerate = 10000; // Example customer count
         logger.info("Let's Generate {} Customers.", customersToGenerate);
 
-        CustomerProducer cusProducer = CustomerProducer.setupWith(connection);
+        DataGenerator<Customer> cusGenerator = new CustomerFakerDataGenerator();
+        CustomerProducer cusProducer =
+                CustomerProducer.setupWith(
+                        PrepareDatabase.getConnection(bootstrapServers), cusGenerator);
         cusProducer.produceCustomerData(customersToGenerate);
 
         logger.info("{} Customers written to database.", customersToGenerate);
 
-        ProductProducer prodProducer = ProductProducer.setupWith(connection);
-        prodProducer.produceProductData(1000);
+        DataGenerator<Product> prdGenerator = new ProductFakerDataGenerator();
+        ProductProducer prodProducer =
+                ProductProducer.setupWith(
+                        PrepareDatabase.getConnection(bootstrapServers), prdGenerator);
+        int productToGenerate = 1000;
+        prodProducer.produceProductData(productToGenerate);
 
-        logger.info("{} Products written to database.", customersToGenerate);
+        logger.info("{} Products written to database.", productToGenerate);
 
-        logger.info("{} Orders written to database.", customersToGenerate);
+        DataGenerator<Order> ordGenerator =
+                new OrderFakerDataGenerator(cusGenerator.getData(), prdGenerator.getData());
+        int orderToGenerate = 1000000;
+        OrderProducer ordProducer =
+                OrderProducer.setupWith(
+                        PrepareDatabase.getConnection(bootstrapServers),
+                        cusGenerator.getData(),
+                        prdGenerator.getData(),
+                        ordGenerator);
+        ordProducer.produceOrderData(orderToGenerate);
+        logger.info("{} Orders written to database.", orderToGenerate);
 
-        logger.info("{} Sales written to database.", customersToGenerate);
+        DataGenerator<Sale> sls = new SaleFakerDataGenerator(ordGenerator.getData());
+        int salesToGenerate = 900000;
+        SaleProducer slsProducer =
+                SaleProducer.setupWith(PrepareDatabase.getConnection(bootstrapServers), sls);
+        slsProducer.produceOrderData(salesToGenerate);
+        logger.info("{} Sales written to database.", salesToGenerate);
     }
 }

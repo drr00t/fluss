@@ -24,10 +24,11 @@ import com.alibaba.fluss.client.table.scanner.ScanRecord;
 import com.alibaba.fluss.client.table.scanner.log.LogScanner;
 import com.alibaba.fluss.client.table.scanner.log.ScanRecords;
 import com.alibaba.fluss.client.table.writer.UpsertWriter;
-import com.alibaba.fluss.examples.ecommerce.boundary.data.CustomerFakerDataGenerator;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.MappingTables;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.Operation;
+import com.alibaba.fluss.examples.ecommerce.control.datageneration.DataGenerator;
+import com.alibaba.fluss.examples.ecommerce.entity.Customer;
 import com.alibaba.fluss.metadata.TableBucket;
 import com.alibaba.fluss.metadata.TablePath;
 import com.alibaba.fluss.row.GenericRow;
@@ -47,23 +48,26 @@ import java.util.List;
 public class CustomerProducer extends Operation {
     private static final Logger logger = LoggerFactory.getLogger(CustomerProducer.class);
     private final UpsertWriter upsertWriter;
+    private final DataGenerator<Customer> datagenerator;
 
-    public CustomerProducer(Connection storageConnection) {
+    public CustomerProducer(Connection storageConnection, DataGenerator<Customer> datagenerator) {
         super(storageConnection, Tables.CUSTOMER_TABLE_PATH);
-        upsertWriter = produceToTable.newUpsert().createWriter();
+        this.upsertWriter = produceToTable.newUpsert().createWriter();
+        this.datagenerator = datagenerator;
     }
 
-    public static CustomerProducer setupWith(Connection connection) {
+    public static CustomerProducer setupWith(
+            Connection connection, DataGenerator<Customer> generator) {
 
         logger.info("Initializing producer with connection: {}", connection);
 
-        return new CustomerProducer(connection);
+        return new CustomerProducer(connection, generator);
     }
 
     public void produceCustomerData(int customerToProduce) {
-        CustomerFakerDataGenerator dataGenerator = new CustomerFakerDataGenerator();
-        dataGenerator
-                .generateMany(customerToProduce)
+        datagenerator.generateMany(customerToProduce);
+        datagenerator
+                .getData()
                 .forEach(
                         customer -> {
                             GenericRow row = MappingTables.ofCustomer(customer);

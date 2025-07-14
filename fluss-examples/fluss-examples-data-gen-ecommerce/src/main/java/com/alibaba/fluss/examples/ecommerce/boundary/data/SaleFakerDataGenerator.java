@@ -34,6 +34,7 @@ import java.util.Random;
  */
 public class SaleFakerDataGenerator implements DataGenerator<Sale> {
     private final List<Order> orders;
+    private List<Sale> sales;
 
     public SaleFakerDataGenerator(List<Order> orders) {
         this.orders = orders;
@@ -41,26 +42,32 @@ public class SaleFakerDataGenerator implements DataGenerator<Sale> {
 
     @Override
     public Sale generateOne() {
-        return generateMany(1).stream().findFirst().orElse(null);
+        generateMany(1);
+        return sales.stream().findFirst().orElse(null);
     }
 
     @Override
-    public List<Sale> generateMany(int count) {
+    public void generateMany(int count) {
         Order order = orders.get(faker.number().numberBetween(0, orders.size() - 1));
-        return faker.collection(
-                        () -> {
-                            LocalDateTime orderDate =
-                                    order.orderDate().plusDays(new Random().nextInt(30));
+        sales =
+                faker.collection(
+                                () -> {
+                                    LocalDateTime orderDate =
+                                            order.orderDate().plusDays(new Random().nextInt(30));
 
-                            return Sale.create(
-                                    order.id(),
-                                    order.productId(),
-                                    order.quantity(),
-                                    orderDate,
-                                    order.amount());
-                        })
-                .maxLen(count)
-                .generate();
+                                    return Sale.create(
+                                            order.id(),
+                                            order.productId(),
+                                            order.quantity(),
+                                            orderDate,
+                                            order.amount());
+                                })
+                        .maxLen(count)
+                        .generate();
+    }
+
+    public List<Sale> getData() {
+        return sales;
     }
 
     private final Faker faker = new Faker();

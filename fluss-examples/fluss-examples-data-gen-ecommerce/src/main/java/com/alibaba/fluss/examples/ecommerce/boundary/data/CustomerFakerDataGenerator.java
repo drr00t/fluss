@@ -31,29 +31,38 @@ import java.util.List;
  * Repository interface.
  */
 public class CustomerFakerDataGenerator implements DataGenerator<Customer> {
+
+    private List<Customer> customers;
+
     @Override
     public Customer generateOne() {
-        return generateMany(1).stream().findFirst().orElse(null);
+        generateMany(1);
+        return customers.stream().findFirst().orElse(null);
     }
 
     @Override
-    public List<Customer> generateMany(int count) {
-        return faker.collection(
-                        () -> {
-                            String name = faker.name().fullName();
-                            LocalDate birthDate =
-                                    faker.date()
-                                            .birthday()
-                                            .toLocalDateTime()
-                                            .toLocalDate()
-                                            .minusYears(faker.number().numberBetween(18, 40));
-                            String address = faker.address().fullAddress();
-                            String city = faker.address().city();
+    public void generateMany(int count) {
+        customers =
+                faker.collection(
+                                () -> {
+                                    String name = faker.name().fullName();
+                                    LocalDate birthDate =
+                                            faker.date()
+                                                    .birthday(18, 50)
+                                                    .toLocalDateTime()
+                                                    .toLocalDate();
+                                    String address = faker.address().fullAddress();
+                                    String city = faker.address().city();
 
-                            return Customer.create(name, address, city, birthDate);
-                        })
-                .maxLen(count)
-                .generate();
+                                    return Customer.create(name, address, city, birthDate);
+                                })
+                        .maxLen(count)
+                        .generate();
+    }
+
+    @Override
+    public List<Customer> getData() {
+        return customers;
     }
 
     private final Faker faker = new Faker();

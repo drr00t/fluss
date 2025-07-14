@@ -23,6 +23,7 @@ import com.alibaba.fluss.examples.ecommerce.entity.Product;
 
 import net.datafaker.Faker;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,30 +31,42 @@ import java.util.List;
  * Repository interface.
  */
 public class ProductFakerDataGenerator implements DataGenerator<Product> {
+    private List<Product> products;
+
     @Override
     public Product generateOne() {
-        return generateMany(1).stream().findFirst().orElse(null);
+        generateMany(1);
+        return products.stream().findFirst().orElse(null);
     }
 
     @Override
-    public List<Product> generateMany(int count) {
-        return faker.collection(
-                        () -> {
-                            String name = faker.commerce().productName();
-                            Double price = Double.valueOf(faker.commerce().price(1.50, 30000.60));
-                            String description =
-                                    String.format(
-                                            "Brand: %s Department: %s Material: %s, Vendor: %s",
-                                            faker.commerce().brand(),
-                                            faker.commerce().department(),
-                                            faker.commerce().material(),
-                                            faker.commerce().vendor());
-                            String category = faker.commerce().department();
+    public void generateMany(int count) {
+        products =
+                faker.collection(
+                                () -> {
+                                    String name = faker.commerce().productName();
+                                    BigDecimal price =
+                                            BigDecimal.valueOf(
+                                                    Double.parseDouble(
+                                                            faker.commerce()
+                                                                    .price(1.50, 30000.60)));
+                                    String description =
+                                            String.format(
+                                                    "Brand: %s Department: %s Material: %s, Vendor: %s",
+                                                    faker.commerce().brand(),
+                                                    faker.commerce().department(),
+                                                    faker.commerce().material(),
+                                                    faker.commerce().vendor());
+                                    String category = faker.commerce().department();
 
-                            return Product.create(name, description, price, category);
-                        })
-                .maxLen(count)
-                .generate();
+                                    return Product.create(name, description, price, category);
+                                })
+                        .maxLen(count)
+                        .generate();
+    }
+
+    public List<Product> getData() {
+        return products;
     }
 
     private final Faker faker = new Faker();

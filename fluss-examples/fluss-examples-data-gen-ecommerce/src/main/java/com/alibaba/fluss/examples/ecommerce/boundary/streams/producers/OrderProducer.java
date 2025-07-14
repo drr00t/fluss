@@ -20,11 +20,12 @@ package com.alibaba.fluss.examples.ecommerce.boundary.streams.producers;
 
 import com.alibaba.fluss.client.Connection;
 import com.alibaba.fluss.client.table.writer.AppendWriter;
-import com.alibaba.fluss.examples.ecommerce.boundary.data.OrderFakerDataGenerator;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.MappingTables;
 import com.alibaba.fluss.examples.ecommerce.boundary.persistence.model.Tables;
 import com.alibaba.fluss.examples.ecommerce.boundary.streams.Operation;
+import com.alibaba.fluss.examples.ecommerce.control.datageneration.DataGenerator;
 import com.alibaba.fluss.examples.ecommerce.entity.Customer;
+import com.alibaba.fluss.examples.ecommerce.entity.Order;
 import com.alibaba.fluss.examples.ecommerce.entity.Product;
 import com.alibaba.fluss.row.GenericRow;
 
@@ -41,24 +42,37 @@ import java.util.List;
 public class OrderProducer extends Operation {
     private static final Logger logger = LoggerFactory.getLogger(OrderProducer.class);
     private final AppendWriter appendWriter;
+    private final List<Customer> cusDatagenerator;
+    private final List<Product> prdDatagenerator;
+    private final DataGenerator<Order> ordDatagenerator;
 
-    public OrderProducer(Connection storageConnection) {
+    public OrderProducer(
+            Connection storageConnection,
+            List<Customer> cusDatagenerator,
+            List<Product> prdDatagenerator,
+            DataGenerator<Order> ordDatagenerator) {
         super(storageConnection, Tables.ORDER_TABLE_PATH);
         appendWriter = produceToTable.newAppend().createWriter();
+        this.cusDatagenerator = cusDatagenerator;
+        this.prdDatagenerator = prdDatagenerator;
+        this.ordDatagenerator = ordDatagenerator;
     }
 
-    public static OrderProducer setupWith(Connection connection) {
+    public static OrderProducer setupWith(
+            Connection connection,
+            List<Customer> cusDatagenerator,
+            List<Product> prdtDatagenerator,
+            DataGenerator<Order> ordDatagenerator) {
 
         logger.info("Initializing producer with connection: {}", connection);
 
-        return new OrderProducer(connection);
+        return new OrderProducer(connection, cusDatagenerator, prdtDatagenerator, ordDatagenerator);
     }
 
-    public void produceOrderData(
-            List<Customer> customers, List<Product> products, int productToProduce) {
-        OrderFakerDataGenerator dataGenerator = new OrderFakerDataGenerator(customers, products);
-        dataGenerator
-                .generateMany(productToProduce)
+    public void produceOrderData(int productToProduce) {
+        ordDatagenerator.generateMany(productToProduce);
+        ordDatagenerator
+                .getData()
                 .forEach(
                         order -> {
                             GenericRow row = MappingTables.ofOrder(order);

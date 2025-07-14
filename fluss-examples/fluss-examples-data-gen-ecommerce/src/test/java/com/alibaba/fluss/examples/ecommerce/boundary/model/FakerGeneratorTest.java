@@ -86,7 +86,8 @@ class FakerGeneratorTest {
         CustomerFakerDataGenerator respotiry = new CustomerFakerDataGenerator();
 
         int count = 1000;
-        List<Customer> customers = respotiry.generateMany(count);
+        respotiry.generateMany(count);
+        List<Customer> customers = respotiry.getData();
 
         // Add assertions to verify the properties of the generated customers
         Assertions.assertEquals(count, customers.size());
@@ -117,7 +118,8 @@ class FakerGeneratorTest {
         ProductFakerDataGenerator repository = new ProductFakerDataGenerator();
 
         int count = 1000;
-        List<Product> products = repository.generateMany(count);
+        repository.generateMany(count);
+        List<Product> products = repository.getData();
 
         // Add assertions to verify the properties of the generated products
         Assertions.assertEquals(count, products.size());

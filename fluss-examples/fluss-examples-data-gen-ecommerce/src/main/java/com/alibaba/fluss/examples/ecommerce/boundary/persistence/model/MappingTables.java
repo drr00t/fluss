@@ -23,6 +23,7 @@ import com.alibaba.fluss.examples.ecommerce.entity.Order;
 import com.alibaba.fluss.examples.ecommerce.entity.Product;
 import com.alibaba.fluss.examples.ecommerce.entity.Sale;
 import com.alibaba.fluss.row.BinaryString;
+import com.alibaba.fluss.row.Decimal;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.TimestampNtz;
 
@@ -48,7 +49,7 @@ public class MappingTables {
         row.setField(0, product.id());
         row.setField(1, BinaryString.fromString(product.name()));
         row.setField(2, BinaryString.fromString(product.description()));
-        row.setField(3, product.price());
+        row.setField(3, Decimal.fromBigDecimal(product.price(), 9, 6));
         row.setField(4, BinaryString.fromString(product.category()));
         return row;
     }
@@ -58,7 +59,7 @@ public class MappingTables {
         row.setField(0, order.id());
         row.setField(1, order.customerId());
         row.setField(2, TimestampNtz.fromLocalDateTime(order.orderDate()));
-        row.setField(3, order.amount());
+        row.setField(3, Decimal.fromBigDecimal(order.amount(), 9, 6));
         return row;
     }
 

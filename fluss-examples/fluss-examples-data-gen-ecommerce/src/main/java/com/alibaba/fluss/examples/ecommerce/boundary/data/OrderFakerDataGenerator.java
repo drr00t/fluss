@@ -25,6 +25,7 @@ import com.alibaba.fluss.examples.ecommerce.entity.Product;
 
 import net.datafaker.Faker;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class OrderFakerDataGenerator implements DataGenerator<Order> {
     private final List<Customer> customers;
     private final List<Product> products;
+    private List<Order> orders;
 
     public OrderFakerDataGenerator(List<Customer> customers, List<Product> products) {
         this.customers = customers;
@@ -45,27 +47,39 @@ public class OrderFakerDataGenerator implements DataGenerator<Order> {
 
     @Override
     public Order generateOne() {
-        return generateMany(1).stream().findFirst().orElse(null);
+        generateMany(1);
+        return orders.stream().findFirst().orElse(null);
     }
 
     @Override
-    public List<Order> generateMany(int count) {
+    public void generateMany(int count) {
         Customer customer = customers.get(new Random().nextInt(customers.size()));
         Product product = products.get(new Random().nextInt(products.size()));
 
-        return faker.collection(
-                        () -> {
-                            long quantity = faker.number().numberBetween(1, 100);
-                            Double amount = product.price();
+        orders =
+                faker.collection(
+                                () -> {
+                                    long quantity = faker.number().numberBetween(1, 100);
+                                    BigDecimal amount = product.price();
 
-                            LocalDateTime orderDate =
-                                    faker.date().past(1000, TimeUnit.DAYS).toLocalDateTime();
+                                    LocalDateTime orderDate =
+                                            faker.date()
+                                                    .past(1000, TimeUnit.DAYS)
+                                                    .toLocalDateTime();
 
-                            return Order.create(
-                                    customer.id(), quantity, product.id(), orderDate, amount);
-                        })
-                .maxLen(new Random().nextInt(count))
-                .generate();
+                                    return Order.create(
+                                            customer.id(),
+                                            quantity,
+                                            product.id(),
+                                            orderDate,
+                                            amount);
+                                })
+                        .maxLen(new Random().nextInt(count))
+                        .generate();
+    }
+
+    public List<Order> getData() {
+        return orders;
     }
 
     private final Faker faker = new Faker();
