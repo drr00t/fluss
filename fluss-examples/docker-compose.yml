@@ -64,6 +64,9 @@ services:
         internal.listener.name: INTERNAL
         tablet-server.id: 0
         kv.snapshot.interval: 0s
+        datalake.format: paimon
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-0
         data.dir: /tmp/fluss/data/tablet-server-0
         remote.data.dir: /tmp/fluss/remote-data
     ports:
@@ -91,6 +94,9 @@ services:
         kv.snapshot.interval: 0s
         data.dir: /tmp/fluss/data/tablet-server-1
         remote.data.dir: /tmp/fluss/remote-data
+        datalake.format: paimon
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-1
     ports:
       - "9125:9123"
     volumes:
@@ -116,6 +122,9 @@ services:
         kv.snapshot.interval: 0s
         data.dir: /tmp/fluss/data/tablet-server-2
         remote.data.dir: /tmp/fluss/remote-data
+        datalake.format: paimon
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-2
     ports:
       - "9126:9123"
     volumes:
