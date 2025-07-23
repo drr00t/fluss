@@ -35,6 +35,7 @@ services:
     command: coordinatorServer
     depends_on:
       - zookeeper
+      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -43,6 +44,7 @@ services:
         advertised.listeners: CLIENT://localhost:9123
         internal.listener.name: INTERNAL
         remote.data.dir: /tmp/fluss/remote-data
+        data.dir: /tmp/fluss/data/coordinator-server
     ports:
       - "9123:9123"
     networks:
@@ -55,6 +57,7 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
+      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -64,11 +67,21 @@ services:
         internal.listener.name: INTERNAL
         tablet-server.id: 0
         kv.snapshot.interval: 0s
+        data.dir: /tmp/fluss/data/tablet-server-0
+        remote.data.dir: s3://warehouse/tablet-server-0
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1
         datalake.format: paimon
         datalake.paimon.metastore: filesystem
-        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-0
+        datalake.paimon.warehouse: s3://warehouse/tablet-server-warehouse-0
         data.dir: /tmp/fluss/data/tablet-server-0
-        remote.data.dir: /tmp/fluss/remote-data
+        # security properties
+  #      security.protocol.map: CLIENT:SASL, INTERNAL:PLAINTEXT
+  #      security.sasl.enabled.mechanisms: PLAIN
+  #      security.sasl.plain.jaas.config: com.alibaba.fluss.security.auth.sasl.plain.PlainLoginModule required user_admin="admin-pass" user_developer="developer-pass" user_consumer="consumer-pass";
+  #      authorizer.enabled: true
+  #      super.users: User:admin
     ports:
       - "9124:9123"
     volumes:
@@ -83,6 +96,7 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
+      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -93,10 +107,19 @@ services:
         tablet-server.id: 1
         kv.snapshot.interval: 0s
         data.dir: /tmp/fluss/data/tablet-server-1
-        remote.data.dir: /tmp/fluss/remote-data
+        remote.data.dir: s3://warehouse/tablet-server-1
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1        
         datalake.format: paimon
         datalake.paimon.metastore: filesystem
-        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-1
+        datalake.paimon.warehouse: s3://warehouse/tablet-server-warehouse-1
+        # security properties
+ #       security.protocol.map: CLIENT:SASL, INTERNAL:PLAINTEXT
+ #       security.sasl.enabled.mechanisms: PLAIN
+ #       security.sasl.plain.jaas.config: com.alibaba.fluss.security.auth.sasl.plain.PlainLoginModule required user_admin="admin-pass" user_developer="developer-pass" user_consumer="consumer-pass";
+ #       authorizer.enabled: true
+ #       super.users: User:admin
     ports:
       - "9125:9123"
     volumes:
@@ -111,6 +134,7 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
+      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -121,10 +145,19 @@ services:
         tablet-server.id: 2
         kv.snapshot.interval: 0s
         data.dir: /tmp/fluss/data/tablet-server-2
-        remote.data.dir: /tmp/fluss/remote-data
+        remote.data.dir: s3://warehouse/tablet-server-2
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1        
         datalake.format: paimon
         datalake.paimon.metastore: filesystem
-        datalake.paimon.warehouse: /tmp/fluss/data/paimon-data-warehouse-2
+        datalake.paimon.warehouse: s3://warehouse/tablet-server-warehouse-2
+        # security properties
+#        security.protocol.map: CLIENT:SASL, INTERNAL:PLAINTEXT
+#        security.sasl.enabled.mechanisms: PLAIN
+#        security.sasl.plain.jaas.config: com.alibaba.fluss.security.auth.sasl.plain.PlainLoginModule required user_admin="admin-pass" user_developer="developer-pass" user_consumer="consumer-pass";
+#        authorizer.enabled: true
+#        super.users: User:admin
     ports:
       - "9126:9123"
     volumes:
@@ -132,6 +165,29 @@ services:
     networks:
       - fluss-net
 
+  fluss-tiering-service:
+    build: .
+    hostname: fluss-tiering-service
+    container_name: fluss-tiering-service
+    command: [ "flink","run","/op/flink/opt/fluss-flink-tiering-0.7.0.jar" ]
+    depends_on:
+      - coordinator-server
+      - minio
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        fluss.bootstrap.servers=tablet-server-1:9123,tablet-server-2:9123,tablet-server-3:9123
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1
+        s3.endpoint: http://minio:9000
+        datalake.format: paimon
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: s3://warehouse/
+    ports:
+      - "9127:9123"
+    networks:
+      - fluss-net
 
   jobmanager:
     build: .
@@ -159,11 +215,34 @@ services:
     depends_on:
       - jobmanager
     environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 10
+        taskmanager.memory.process.size: 2048m
+        taskmanager.memory.framework.off-heap.size: 256m
     networks:
       - fluss-net
     volumes:
       - shared-tmpfs:/tmp/paimon
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    hostname: minio
+    command: server /tmp/minio --console-address ':9001' & sleep 5 && \
+      mc alias set myminio http://localhost:9000 admin minio123 && \
+      mc mb myminio/warehouse || true && wait
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: minio123
+    networks:
+      - fluss-net
+    volumes:
+      - shared-tmpfs:/tmp/minio
 
 volumes:
   shared-tmpfs:

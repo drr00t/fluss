@@ -1,12 +1,13 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.fluss.examples;
+package com.alibaba.fluss.examples.pubsub;
 
 import com.alibaba.fluss.client.Connection;
 import com.alibaba.fluss.client.ConnectionFactory;
@@ -37,7 +38,6 @@ import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.InternalRow;
 import com.alibaba.fluss.row.TimestampNtz;
 import com.alibaba.fluss.types.DataTypes;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +51,12 @@ import java.util.stream.Collectors;
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
-public class JavaClientExample {
-    private static final Logger logger = LoggerFactory.getLogger(JavaClientExample.class);
+public class JavaClientExampleold {
+    private static final Logger logger = LoggerFactory.getLogger(JavaClientExampleold.class);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         String hostname = "localhost:9123";
-        logger.info("Starting {}", JavaClientExample.class.getSimpleName());
+        logger.info("Starting {}", JavaClientExampleold.class.getSimpleName());
 
         if (args.length > 0) {
             logger.info("Default server host changed via CLI to: {}", args[0]);

@@ -23,7 +23,6 @@ ARG HADOOP_VERSION=2.8.3-10.0
 
 RUN wget -P /opt/flink/lib \
     https://repo.maven.apache.org/maven2/org/apache/paimon/paimon-flink-${FLINK_VERSION}/${PAIMON_VERSION}/paimon-flink-${FLINK_VERSION}-${PAIMON_VERSION}.jar
-#    https://repo.maven.apache.org/maven2/org/apache/paimon/paimon-flink-1.20/1.0.1/paimon-flink-1.20-1.0.1.jar \
 RUN wget -P /opt/flink/lib \
     https://repo1.maven.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/${HADOOP_VERSION}/flink-shaded-hadoop-2-uber-${HADOOP_VERSION}.jar
 RUN wget -P /opt/flink/lib \
@@ -32,3 +31,6 @@ RUN wget -P /opt/flink/lib \
     https://repo1.maven.org/maven2/com/alibaba/fluss/fluss-lake-paimon/${FLUSS_VERSION}/fluss-lake-paimon-${FLUSS_VERSION}.jar
 RUN wget -P /opt/flink/opt \
     https://repo1.maven.org/maven2/com/alibaba/fluss/fluss-flink-tiering/${FLUSS_VERSION}/fluss-flink-tiering-${FLUSS_VERSION}.jar
+RUN wget -P /opt/flink/lib \
+    https://repo.maven.apache.org/maven2/org/apache/paimon/paimon-s3/${PAIMON_VERSION}/paimon-s3-${PAIMON_VERSION}.jar
+

@@ -42,6 +42,7 @@ public class Descriptors {
                     .comment("Customer table")
                     .property("table.merge-engine", "versioned")
                     .property("table.merge-engine.versioned.ver-column", "updatedAt")
+                    .property("table.datalake.enabled", "true")
                     .build();
 
     public static final TableDescriptor PRODUCT_TABLE_DESCRIPTOR =
@@ -49,6 +50,7 @@ public class Descriptors {
                     .schema(Schemas.PRODUCT_SCHEMA)
                     .distributedBy(3, "id")
                     .comment("Product table")
+                    .property("table.datalake.enabled", "true")
                     .build();
 
     public static final TableDescriptor ORDER_TABLE_DESCRIPTOR =
@@ -56,6 +58,7 @@ public class Descriptors {
                     .schema(Schemas.ORDER_SCHEMA)
                     .distributedBy(3, "id")
                     .comment("Order table")
+                    .property("table.datalake.enabled", "true")
                     .build();
 
     public static final TableDescriptor SALE_TABLE_DESCRIPTOR =
@@ -63,5 +66,6 @@ public class Descriptors {
                     .schema(Schemas.SALE_SCHEMA)
                     .distributedBy(3, "id")
                     .comment("Sale table")
+                    .property("table.datalake.enabled", "true")
                     .build();
 }
