@@ -33,28 +33,29 @@ import org.slf4j.LoggerFactory;
 
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-
 /** Example Java Client usage for Fluss demonstrating streaming operations. */
-public class JavaClientAdminExample {
-    private static final Logger logger = LoggerFactory.getLogger(JavaClientAdminExample.class);
+public class JavaClientExample {
+    private static final Logger logger = LoggerFactory.getLogger(JavaClientExample.class);
 
     public static void main(String[] args) throws Exception {
 
-        logger.info("Starting {}", JavaClientAdminExample.class.getSimpleName());
+        logger.info("Starting {}", JavaClientExample.class.getSimpleName());
 
-        String hostname = "localhost:9123";
-        String channel = "DEFAULT";
-
-        if (System.getenv("FLUSS_HOST") != null) {
-            hostname = System.getenv("FLUSS_HOST");
-        }
+        String hostname = System.getenv("FLUSS_HOST");
+        String channel = "ENV";
 
         if (args.length > 0) {
+            logger.info("Default server host changed via CLI to: {}", args[0]);
             hostname = args[0];
             channel = "CLI";
         }
 
-        logger.info("Default server host setup via {} to: {}", channel, hostname);
+        if (hostname.isEmpty()) {
+            hostname = "localhost:9123";
+            channel = "DEFAULT";
+        }
+
+        logger.info("Default server host setup via {} to: {}", hostname, channel);
 
         // creating Connection object to connect with Fluss cluster
         Configuration conf = new Configuration();
