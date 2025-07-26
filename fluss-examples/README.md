@@ -16,16 +16,6 @@
  limitations under the License.
 -->
 
-Fluss is designed to address the demands of real-time analytics with the following key capabilities:
-
-- Real-Time Stream Reading and Writing: Supports millisecond-level end-to-end latency.
-- Columnar Stream: Optimizes storage and query efficiency.
-- Streaming Updates: Enables low-latency updates to data streams.
-- Changelog Generation: Supports changelog generation and consumption.
-- Real-Time Lookup Queries: Facilitates instant lookup queries on primary keys.
-- Streaming & Lakehouse Unification: Seamlessly integrates streaming and lakehouse storage for unified data processing.
-
-
 # Fluss Examples
 
 This is a curated list of examples that showcase event streaming using Apache Pulsar.
@@ -50,7 +40,16 @@ docker compose up
 - [Table Bucketing](table-bucketing/table-bucketing.md)
 - [Table Partitions](table-partitioning/table-partitioning.md)
 
-### PubSub
+### Recommendation for next examples
+
+Fluss is designed to address the demands of real-time analytics with the following key capabilities:
+
+- [x] Real-Time Stream Reading and Writing: Supports millisecond-level end-to-end latency.
+- [x] Streaming Updates: Enables low-latency updates to data streams.
+- [x] Real-Time Lookup Queries: Facilitates instant lookup queries on primary keys.
+- [ ] Columnar Stream: Optimizes storage and query efficiency.
+- [ ] Changelog Generation: Supports changelog generation and consumption.
+- [ ] Streaming & Lakehouse Unification: Seamlessly integrates streaming and lakehouse storage for unified data processing.
 
 ## Running the Environment
 
@@ -66,17 +65,19 @@ docker compose up
 You can build the examples using Maven. Navigate to the `fluss-examples` directory and run:
 
 ```bash
+mvn spotless:apply
+
 mvn clean package
 ```
 
 ## Runing the Examples
 
-You maybe will need setup arrow environment variables to run the examples:
+Enter into example directory and run the example using the following command:
 
 ```bash
-JDK_JAVA_OPTIONS="--add-opens=java.base/java.nio=org.apache.arrow.memory.core,ALL-UNNAMED" java 
-
-
+cd clientjava-multkeys-primarykey-table
+java -jar target/clientjava-multkeys-primarykey-table-0.8-SNAPSHOT.jar
+```
 
 
 
