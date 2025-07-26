@@ -39,13 +39,14 @@ This is a curated list of examples that showcase event streaming using Apache Pu
 docker compose up
 ```
 
-## Full example list
+## Full list of Java Client Examples
 
-- [Java Client Admin](clientjava-admin/clientjava-admin.md)
-- [Java Client Basic Writing](clientjava-basic-write/clientjava-basic-write.md)
-- [Basic Schema](clientjava-basic-schema/clientjava-basic-schema.md)
-- [Log Table Example](clientjava-log-table/clientjava-logtable.md)
-- [PrimaryKey Table Example](clientjava-primarykey-table/clientjava-primarykey-table.md)
+- [Admin](clientjava-admin/)
+- [Basic Log Table Write and Read](clientjava-basic-log-table/)
+- [Basic PrimaryKey Table Write and Lookup](clientjava-basic-primarykey-table/)
+- [PrimaryKey Mult-Keys Table Write and PrefixLookup](clientjava-keys-primarykey-table/)
+- [Schema Definitions](examples-commons/)
+
 - [Table Bucketing](table-bucketing/table-bucketing.md)
 - [Table Partitions](table-partitioning/table-partitioning.md)
 
