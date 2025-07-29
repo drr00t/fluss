@@ -31,7 +31,6 @@ import com.alibaba.fluss.examples.commons.Descriptors;
 import com.alibaba.fluss.metadata.TableBucket;
 import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,6 @@ public class BasicLogTableExample {
         Configuration conf = new Configuration();
         conf.setString("bootstrap.servers", hostname);
 
-        Table table;
         try (Connection connection = ConnectionFactory.createConnection(conf)) {
 
             // obtain Admin instance from the Connection
