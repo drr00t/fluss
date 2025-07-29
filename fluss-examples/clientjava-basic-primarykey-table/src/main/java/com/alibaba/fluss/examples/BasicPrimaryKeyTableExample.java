@@ -33,7 +33,11 @@ import com.alibaba.fluss.row.InternalRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Example Java Client usage to writing and reading data from Fluss. */
+/**
+ * This example show how to create a Schema for a PrimaryKey table, this table type supports upsert,
+ * update and delete writing operations. For reading at this example we are using a lookup, more
+ * specific a PrefixLookup when it's passed a key ou set of keys from bucketing list.
+ */
 public class BasicPrimaryKeyTableExample {
     private static final Logger logger = LoggerFactory.getLogger(BasicPrimaryKeyTableExample.class);
 

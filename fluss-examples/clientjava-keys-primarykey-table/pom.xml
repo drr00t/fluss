@@ -26,7 +26,7 @@
         <artifactId>fluss-examples</artifactId>
         <version>0.8-SNAPSHOT</version>
     </parent>
-    <artifactId>clientjava-multkeys-primarykey-table</artifactId>
+    <artifactId>clientjava-keys-primarykey-table</artifactId>
     <name>Fluss : Examples : Java Client : PrimaryKey Table : With Multiple Keys</name>
     <description>This an example of primary key table with multiple keys usage.</description>
 

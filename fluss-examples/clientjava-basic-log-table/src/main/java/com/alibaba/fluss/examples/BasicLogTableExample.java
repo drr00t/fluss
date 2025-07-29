@@ -37,7 +37,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 
-/** Example Java Client usage to writing and reading data from Fluss. */
+/**
+ * This example show how to use a Log table. Log Table just support append as write operation, it's
+ * kind of analog to a kafka topic, here we are doing a scan analog to a kafka consumer.
+ */
 public class BasicLogTableExample {
     private static final Logger logger = LoggerFactory.getLogger(BasicLogTableExample.class);
 
