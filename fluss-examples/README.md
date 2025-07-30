@@ -48,7 +48,8 @@ Fluss is designed to address the demands of real-time analytics with the followi
 - [x] Real-Time Lookup Queries: Facilitates instant lookup queries on primary keys.
 - [ ] Columnar Stream: Optimizes storage and query efficiency.
 - [ ] Changelog Generation: Supports changelog generation and consumption.
-- [ ] Streaming & Lakehouse Unification: Seamlessly integrates streaming and lakehouse storage for unified data processing.
+- [ ] Streaming & Lakehouse Unification: Seamlessly integrates streaming and lakehouse storage for unified data
+  processing.
 
 ## Running the Environment
 

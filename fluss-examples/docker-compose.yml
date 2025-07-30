@@ -35,7 +35,7 @@ services:
     command: coordinatorServer
     depends_on:
       - zookeeper
-      - minio
+      - minio-create-bucket
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -43,8 +43,17 @@ services:
         bind.listeners: INTERNAL://coordinator-server:0, CLIENT://coordinator-server:9123
         advertised.listeners: CLIENT://localhost:9123
         internal.listener.name: INTERNAL
-        remote.data.dir: /tmp/fluss/remote-data
-        data.dir: /tmp/fluss/data/coordinator-server
+        remote.data.dir: /tmp/fluss/
+    #        remote.data.dir: s3://warehouse/remote-data
+    #        s3.access-key: admin
+    #        s3.secret-key: minio123
+    #        s3.region: br-south-1
+    #        s3.endpoint: http://minio:9000
+    #        # Paimon configuration
+    #        datalake.format: paimon
+    #        # the catalog config about Paimon, assuming using Filesystem catalog
+    #        datalake.paimon.metastore: filesystem
+    #        datalake.paimon.warehouse: s3://warehouse/
     ports:
       - "9123:9123"
     networks:
@@ -57,7 +66,6 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
-      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -66,10 +74,19 @@ services:
         advertised.listeners: CLIENT://localhost:9124
         internal.listener.name: INTERNAL
         tablet-server.id: 0
-        kv.snapshot.interval: 0s
+        kv.snapshot.interval: 10s
         data.dir: /tmp/fluss/data/tablet-server-0
-        remote.data.dir: /tmp/fluss/data/remote-tablet-server-0
-
+        #        remote.data.dir: /tmp/fluss/
+        remote.data.dir: s3://warehouse/
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1
+        s3.endpoint: http://minio:9000
+        # Paimon configuration
+        datalake.format: paimon
+        # the catalog config about Paimon, assuming using Filesystem catalog
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: s3://warehouse/
     ports:
       - "9124:9123"
     volumes:
@@ -84,7 +101,6 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
-      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -93,9 +109,19 @@ services:
         advertised.listeners: CLIENT://localhost:9125
         internal.listener.name: INTERNAL
         tablet-server.id: 1
-        kv.snapshot.interval: 0s
+        kv.snapshot.interval: 10s
         data.dir: /tmp/fluss/data/tablet-server-1
-        remote.data.dir: /tmp/fluss/data/remote-tablet-server-1
+        #        remote.data.dir: /tmp/fluss/
+        remote.data.dir: s3://warehouse/
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1
+        s3.endpoint: http://minio:9000
+        # Paimon configuration
+        datalake.format: paimon
+        # the catalog config about Paimon, assuming using Filesystem catalog
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: s3://warehouse/
     ports:
       - "9125:9123"
     volumes:
@@ -110,7 +136,6 @@ services:
     command: tabletServer
     depends_on:
       - coordinator-server
-      - minio
     environment:
       - |
         FLUSS_PROPERTIES=
@@ -119,9 +144,19 @@ services:
         advertised.listeners: CLIENT://localhost:9126
         internal.listener.name: INTERNAL
         tablet-server.id: 2
-        kv.snapshot.interval: 0s
+        kv.snapshot.interval: 10s
         data.dir: /tmp/fluss/data/tablet-server-2
-        remote.data.dir: /tmp/fluss/data/remote-tablet-server-2
+        #        remote.data.dir: /tmp/fluss/
+        remote.data.dir: s3://warehouse/
+        s3.access-key: admin
+        s3.secret-key: minio123
+        s3.region: br-south-1
+        s3.endpoint: http://minio:9000
+        # Paimon configuration
+        datalake.format: paimon
+        # the catalog config about Paimon, assuming using Filesystem catalog
+        datalake.paimon.metastore: filesystem
+        datalake.paimon.warehouse: s3://warehouse/
     ports:
       - "9126:9123"
     volumes:
@@ -129,29 +164,29 @@ services:
     networks:
       - fluss-net
 
-#  fluss-tiering-service:
-#    build: .
-#    hostname: fluss-tiering-service
-#    container_name: fluss-tiering-service
-#    command: [ "flink","run","/op/flink/opt/fluss-flink-tiering-0.7.0.jar" ]
-#    depends_on:
-#      - coordinator-server
-#      - minio
-#    environment:
-#      - |
-#        FLINK_PROPERTIES=
-#        fluss.bootstrap.servers=tablet-server-1:9123,tablet-server-2:9123,tablet-server-3:9123
-#        s3.access-key: admin
-#        s3.secret-key: minio123
-#        s3.region: br-south-1
-#        s3.endpoint: http://minio:9000
-#        datalake.format: paimon
-#        datalake.paimon.metastore: filesystem
-#        datalake.paimon.warehouse: s3://warehouse/
-#    ports:
-#      - "9127:9123"
-#    networks:
-#      - fluss-net
+  #  fluss-tiering-service:
+  #    build: .
+  #    hostname: fluss-tiering-service
+  #    container_name: fluss-tiering-service
+  #    command: [ "flink","run","/op/flink/opt/fluss-flink-tiering-0.7.0.jar" ]
+  #    depends_on:
+  #      - coordinator-server
+  #      - minio
+  #    environment:
+  #      - |
+  #        FLINK_PROPERTIES=
+  #        fluss.bootstrap.servers=tablet-server-1:9123,tablet-server-2:9123,tablet-server-3:9123
+  #        s3.access-key: admin
+  #        s3.secret-key: minio123
+  #        s3.region: br-south-1
+  #        s3.endpoint: http://minio:9000
+  #        datalake.format: paimon
+  #        datalake.paimon.metastore: filesystem
+  #        datalake.paimon.warehouse: s3://warehouse/
+  #    ports:
+  #      - "9127:9123"
+  #    networks:
+  #      - fluss-net
 
   jobmanager:
     build: .
@@ -191,12 +226,16 @@ services:
       - shared-tmpfs:/tmp/paimon
 
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     container_name: minio
     hostname: minio
-    command: server /tmp/minio --console-address ':9001' & sleep 5 && \
-      mc alias set myminio http://localhost:9000 admin minio123 && \
-      mc mb myminio/warehouse || true && wait
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    command: [ "server", "/tmp/minio", "--console-address", ":9001" ]
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -207,6 +246,21 @@ services:
       - fluss-net
     volumes:
       - shared-tmpfs:/tmp/minio
+
+  minio-create-bucket:
+    image: minio/mc:latest
+    container_name: minio-create-bucket
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add flminio http://minio:9000 admin minio123;
+      /usr/bin/mc mb --ignore-existing flminio/warehouse;
+      exit 0;
+      "
+    networks:
+      - fluss-net
 
 volumes:
   shared-tmpfs:

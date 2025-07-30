@@ -36,7 +36,7 @@
         <module>clientjava-admin</module>
         <module>clientjava-basic-log-table</module>
         <module>clientjava-basic-primarykey-table</module>
-        <module>clientjava-keys-primarykey-table</module>
+        <module>clientjava-multkeys-primarykey-table</module>
     </modules>
     <properties>
         <java.version>11</java.version>
