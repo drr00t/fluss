@@ -30,7 +30,6 @@ import com.alibaba.fluss.row.BinaryString;
 import com.alibaba.fluss.row.GenericRow;
 import com.alibaba.fluss.row.InternalRow;
 import com.alibaba.fluss.row.TimestampNtz;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +63,6 @@ public class BasicMultKeysPrimaryKeyTableExample {
         Configuration conf = new Configuration();
         conf.setString("bootstrap.servers", hostname);
 
-        Table table;
         try (Connection connection = ConnectionFactory.createConnection(conf)) {
 
             // obtain Admin instance from the Connection
